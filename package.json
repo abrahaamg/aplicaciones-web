@@ -1,0 +1,20 @@
+{
+    "name": "centro-formacion",
+    "version": "1.0.0",
+    "description": "Plataforma web de gestión de un centro de formación. Práctica obligatoria de Aplicaciones Web.",
+    "main": "index.js",
+    "private": true,
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js"
+    },
+    "dependencies": {
+        "ejs": "^3.1.10",
+        "express": "^4.22.3",
+        "express-session": "^1.19.0",
+        "morgan": "^1.12.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.14"
+    }
+}

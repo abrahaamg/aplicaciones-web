@@ -1,0 +1,66 @@
+<div
+  class="modal fade"
+  id="modal-login"
+  tabindex="-1"
+  aria-labelledby="modal-login-label"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-login-label">Iniciar sesión</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-login" novalidate>
+          <div class="mb-3">
+            <label for="login-email" class="form-label"
+              >Correo electrónico</label
+            >
+            <input
+              type="email"
+              class="form-control"
+              id="login-email"
+              name="email"
+              required
+            />
+          </div>
+
+          <div
+            id="error-login-email"
+            class="text-danger mt-1"
+            style="display: none"
+          >
+            Por favor, ingrese un correo electrónico válido.
+          </div>
+
+          <div class="mb-3">
+            <label for="login-password" class="form-label">Contraseña</label>
+            <input
+              type="password"
+              class="form-control"
+              id="login-password"
+              name="password"
+              required
+            />
+          </div>
+
+          <div
+            id="error-login-password"
+            class="text-danger mt-1"
+            style="display: none"
+          >
+            Por favor, ingrese una contraseña válida.
+          </div>
+
+          <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

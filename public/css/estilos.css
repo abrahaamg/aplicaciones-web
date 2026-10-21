@@ -1,38 +1,49 @@
 /* Hoja de estilos propia. No se modifican los ficheros de Bootstrap. */
 
 :root {
-    --color-fondo: #ffffff;
-    --color-texto: #212529;
-    --color-principal: #0d6efd;
+  --color-fondo: #ffffff;
+  --color-texto: #212529;
+  --color-principal: #0d6efd;
 }
 
 body {
-    background-color: var(--color-fondo);
-    color: var(--color-texto);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
 }
 
 /* Foco bien visible para la navegación con teclado */
 :focus-visible {
-    outline: 3px solid var(--color-principal);
-    outline-offset: 2px;
+  outline: 3px solid var(--color-principal);
+  outline-offset: 2px;
 }
 
 /* ===== Accesibilidad: clases que js/comun.js pone en <html> ===== */
 
 /* Tema oscuro (Bootstrap 5.1 no lo trae, se hace con variables propias) */
 .tema-oscuro {
-    --color-fondo: #121212;
-    --color-texto: #e9ecef;
-    --color-principal: #6ea8fe;
+  --color-fondo: #121212;
+  --color-texto: #e9ecef;
+  --color-principal: #6ea8fe;
 }
 
 /* Alto contraste */
 .alto-contraste {
-    --color-fondo: #000000;
-    --color-texto: #ffffff;
-    --color-principal: #ffff00;
+  --color-fondo: #000000;
+  --color-texto: #ffffff;
+  --color-principal: #ffff00;
 }
 
 /* Tamaño de fuente: Bootstrap usa rem, así que todo escala con esto */
-.fuente-grande { font-size: 112.5%; }
-.fuente-muy-grande { font-size: 125%; }
+.fuente-grande {
+  font-size: 112.5%;
+}
+.fuente-muy-grande {
+  font-size: 125%;
+}
+
+.separador-navbar {
+  display: block;
+  width: 2px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.5);
+}

@@ -106,7 +106,28 @@ Códigos: 200/201 ok, 400 datos mal, 401 sin sesión, 403 sin permiso, 404 no ex
 - Cancelar una matrícula **no la borra**: pone `estado = 'cancelada'`.
 - Contraseñas con hash (`bcryptjs`), nunca en claro.
 
-## 8. Git
+## 8. Tablero de tareas
+
+Todo el trabajo está en el tablero: https://github.com/users/abrahaamg/projects/1 (vista **Board**). Cada tarjeta es una tarea (issue) con su responsable.
+
+| Columna | Significa | Quién la mueve |
+|---|---|---|
+| **Por hacer** | Nadie ha empezado | Sola, al crear la tarea |
+| **En curso** | La estoy haciendo | **Tú, a mano**, al empezar |
+| **Hecho** | Terminada y con PR abierto, falta que el otro la revise | Sola, al abrir el PR con `Closes #N` |
+| **Validado** | El otro la ha revisado y está en `main` | Sola, al fusionar el PR |
+
+El flujo de una tarea, por ejemplo la #5:
+
+1. Mueve la tarjeta a **En curso**.
+2. Crea tu rama: `git checkout -b feat/registro`.
+3. Trabaja y haz commits.
+4. Sube la rama (`git push -u origin feat/registro`) y abre el PR en GitHub. En la descripción escribe `Closes #5`. La tarjeta pasa sola a **Hecho**.
+5. El otro revisa el PR. Si está bien, lo fusiona y la tarjeta pasa sola a **Validado**.
+
+Lo único que se mueve a mano es **En curso**. Si se te olvida, el otro no sabe que estás con ello.
+
+## 9. Git
 
 - `main` siempre tiene que arrancar.
 - Una rama por funcionalidad: `feat/catalogo-cursos`, `fix/validacion-registro`.
@@ -116,7 +137,7 @@ Códigos: 200/201 ok, 400 datos mal, 401 sin sesión, 403 sin permiso, 404 no ex
 - En cada microhito, una etiqueta: `git tag hito-1` y `git push --tags`.
 - Nunca se sube `node_modules` (ya está en `.gitignore`).
 
-## 9. Pendiente de decidir
+## 10. Pendiente de decidir
 
 - **E/R vs enunciado**: la tabla `usuarios` del diagrama no tiene apellidos, teléfono ni preferencias, y `docentes` no tiene apellidos. Esperamos al `aw_practica.sql` del profe; si faltan, los añadimos y lo justificamos en la defensa.
 - **Navbar/footer en la fase JS**: copiados en cada HTML hasta que veamos EJS, o pintados desde `comun.js`. Lo decidimos al llegar.

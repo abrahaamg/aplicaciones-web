@@ -8,8 +8,8 @@ function aplicarPreferencias() {
     let preferencias = {};
     try {
         preferencias = JSON.parse(localStorage.getItem(CLAVE_PREFERENCIAS)) || {};
-    } catch (error) {
-        preferencias = {};
+    } catch {
+        // Si lo guardado está roto o el navegador no deja leerlo, se quedan las de por defecto
     }
 
     const html = document.documentElement;

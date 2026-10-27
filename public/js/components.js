@@ -3,14 +3,20 @@
 
 // Trae un trozo de HTML de components/ y lo pone dentro del contenedor indicado
 async function cargarComponente(idContenedor, ruta) {
+    const contenedor = document.getElementById(idContenedor);
     try {
         const respuesta = await fetch(ruta);
         if (!respuesta.ok) {
             throw new Error('Respuesta ' + respuesta.status);
         }
-        document.getElementById(idContenedor).innerHTML = await respuesta.text();
+        contenedor.innerHTML = await respuesta.text();
     } catch (error) {
         console.error('No se pudo cargar ' + ruta, error);
+        const aviso = document.createElement('div');
+        aviso.className = 'alert alert-danger m-0 rounded-0';
+        aviso.setAttribute('role', 'alert');
+        aviso.textContent = 'No se ha podido cargar esta parte de la página. Recarga para intentarlo de nuevo.';
+        contenedor.replaceChildren(aviso);
     }
 }
 

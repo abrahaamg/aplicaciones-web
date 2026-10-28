@@ -155,6 +155,7 @@ Lo único que se mueve a mano es **En curso**. Si se te olvida, el otro no sabe 
 - Una rama por funcionalidad: `feat/catalogo-cursos`, `fix/validacion-registro`.
 - Antes de empezar: `git pull`.
 - Se fusiona a `main` con un Pull Request que **revisa el otro**. En la defensa el profe elige a uno de los dos al azar, así que los dos tenemos que conocer todo el código.
+- **Excepción, arreglos pequeños**: si el PR solo corrige un error menor (una errata, un enlace roto, un icono, una etiqueta mal escrita), lo puede fusionar el mismo que lo ha hecho, sin esperar al otro. Se avisa por el grupo con el enlace del PR para que el otro lo vea.
 - Commits pequeños, en español y en imperativo, con prefijo: `feat: añade filtro por estado en el catálogo`, `fix: corrige validación del email`, `style: ajusta tarjetas de cursos`, `docs: actualiza manual`.
 - En cada microhito, una etiqueta: `git tag hito-1` y `git push --tags`.
 - Nunca se sube `node_modules` (ya está en `.gitignore`).

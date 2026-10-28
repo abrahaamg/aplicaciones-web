@@ -23,7 +23,8 @@ aplicaciones-web/
 └── public/               todo lo que se sirve tal cual al navegador
     ├── *.html            páginas (fase estática y JS)
     ├── css/              bootstrap.min.css, bootstrap-icons.min.css, fonts/, estilos.css
-    ├── js/               bootstrap.bundle.min.js, comun.js, un JS por página
+    ├── components/       navbar.html y footer.html, escritos una sola vez
+    ├── js/               bootstrap.bundle.min.js, comun.js, components.js, un JS por página
     └── img/              logo, cursos/, docentes/
 ```
 
@@ -33,7 +34,7 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 
 | Fase | Qué se hace | Dónde |
 |---|---|---|
-| 1. HTML + CSS | Páginas estáticas con Bootstrap. Navbar y footer copiados en cada página. | `public/*.html`, `public/css/estilos.css` |
+| 1. HTML + CSS | Páginas estáticas con Bootstrap. Navbar y footer en `components/`, cargados por `js/components.js`. | `public/*.html`, `public/components/`, `public/css/estilos.css` |
 | 2. JS + DOM + formularios | Validación, eventos, accesibilidad, LocalStorage. | `public/js/<pagina>.js`, `public/js/comun.js` |
 | 3. Fetch + JSON | Los datos se leen de JSON con `fetch`. | `public/js/`, `data/` |
 | 4. Backend | Express + MariaDB. Las páginas pasan a `views/*.ejs` y navbar/footer a `views/partials/`. La API vive en `/api/...`. | `routes/`, `views/`, `config/`, `middleware/` |
@@ -45,11 +46,14 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 - **Páginas de administrador**: prefijo `admin-`: `admin-cursos.html`, `admin-docentes.html`...
 - **JS**: variables y funciones en camelCase (`cargarCursos`, `idCurso`). Constantes en MAYUSCULAS (`CLAVE_PREFERENCIAS`).
 - **CSS e ids de HTML**: minúsculas con guiones (`tarjeta-curso`, `form-registro`).
+- **Excepción**: `password` se queda en inglés, como el `type="password"` del campo (`password`, `confirmar-password`, `error-password`).
 - **Base de datos y JSON de la API**: snake_case, igual que el modelo E/R (`id_curso`, `fecha_inicio`).
 
 ## 3. HTML y Bootstrap
 
 - Se parte siempre de `public/index.html` como plantilla: copiarla y cambiar solo el `<title>` y el `<main>`.
+- El menú y el pie **no se copian**: están una sola vez en `components/navbar.html` y `components/footer.html`. Cada página solo lleva sus huecos, `<div id="navbar"></div>` y `<div id="footer"></div>`, y el script `js/components.js`, que los rellena y resalta en el menú la página actual. Para cambiar el menú se toca solo `navbar.html`.
+- Como el menú se carga con `fetch`, hay que abrir la web con `npm start` (http://localhost:3000). Con doble clic en el HTML sale sin menú.
 - Bootstrap es la **5.1.3** (la del profe), en local. Nada de CDN. Ojo: la documentación de la 5.3 trae cosas que aquí no existen (`data-bs-theme`, `bg-body-tertiary`).
 - No se toca `bootstrap.min.css`. Lo nuestro va en `css/estilos.css`.
 - Etiquetas semánticas: `header`, `nav`, `main`, `footer`. Un solo `h1` por página.
@@ -58,7 +62,7 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 
 ## 4. JavaScript de cliente
 
-- Orden de scripts al final del `body`: `bootstrap.bundle.min.js`, luego `comun.js`, luego el de la página.
+- Orden de scripts al final del `body`: `bootstrap.bundle.min.js`, luego `comun.js`, luego `components.js`, luego el de la página.
 - `comun.js` solo lleva lo que usan todas las páginas (preferencias de accesibilidad, mostrar alertas, confirmar con modal, llamar a la API).
 - `const` y `let`, nunca `var`.
 - Eventos con `addEventListener`. Nada de `onclick` en el HTML.
@@ -69,6 +73,24 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 
 1. Primero los atributos HTML5: `required`, `type="email"`, `minlength`...
 2. Después validación en JS en el `submit` con `preventDefault()`. El error se pone junto al campo (`is-invalid` + `invalid-feedback`), con texto, no solo con color.
+
+   El mensaje va justo debajo de su campo, con la clase `invalid-feedback` y sin `style`. Bootstrap lo esconde solo:
+
+   ```html
+   <input type="text" id="nombre" class="form-control" maxlength="50" required>
+   <div class="invalid-feedback">Escribe tu nombre (máximo 50 caracteres).</div>
+   ```
+
+   En el JS no se toca el mensaje, solo el campo. Si el campo tiene la clase `is-invalid`, Bootstrap enseña el mensaje y pone el borde rojo:
+
+   ```js
+   const nombre = document.getElementById('nombre');
+   if (nombre.value.trim() === '' || nombre.value.length > 50) {
+       nombre.classList.add('is-invalid');     // sale el mensaje
+   } else {
+       nombre.classList.remove('is-invalid');  // se esconde
+   }
+   ```
 3. Y **se vuelve a validar en el servidor**, siempre.
 - Cada campo con su `<label for="...">`.
 - Las contraseñas nunca se guardan en `localStorage` ni `sessionStorage`.
@@ -140,6 +162,5 @@ Lo único que se mueve a mano es **En curso**. Si se te olvida, el otro no sabe 
 ## 10. Pendiente de decidir
 
 - **E/R vs enunciado**: la tabla `usuarios` del diagrama no tiene apellidos, teléfono ni preferencias, y `docentes` no tiene apellidos. Esperamos al `aw_practica.sql` del profe; si faltan, los añadimos y lo justificamos en la defensa.
-- **Navbar/footer en la fase JS**: copiados en cada HTML hasta que veamos EJS, o pintados desde `comun.js`. Lo decidimos al llegar.
 - **Imágenes de cursos y docentes**: de momento se guarda solo la ruta en la base de datos.
 - **Borrar docentes/aulas o marcarlos inactivos**: el modelo tiene campo de estado, hay que decidir cuál usamos.

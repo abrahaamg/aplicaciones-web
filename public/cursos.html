@@ -25,7 +25,31 @@
         <h1>Cursos</h1>
         <p>Oferta formativa del centro.</p>
 
+        <div class="mb-4 col-md-6">
+            <label for="buscar-curso" class="form-label">Buscar curso</label>
+            <input type="search" id="buscar-curso" class="form-control" placeholder="Nombre o descripción">
+        </div>
+
         <div id="lista-cursos" class="row g-4"></div>
+
+        <!-- Confirmación antes de borrar un curso -->
+        <div class="modal fade" id="modal-borrar" tabindex="-1" aria-labelledby="titulo-modal-borrar" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="titulo-modal-borrar">Borrar curso</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Seguro que quieres borrar el curso <strong id="nombre-curso-borrar"></strong>? No se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmar-borrar">Borrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <div id="footer"></div>

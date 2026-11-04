@@ -153,6 +153,8 @@ Lo único que se mueve a mano es **En curso**. Si se te olvida, el otro no sabe 
 
 - `main` siempre tiene que arrancar.
 - Una rama por funcionalidad: `feat/catalogo-cursos`, `fix/validacion-registro`.
+- Un PR por rama, y **siempre contra `main`**. No se apilan PR sobre otras ramas: si una funcionalidad depende de otra, se espera a que la primera esté fusionada y entonces se crea la rama desde `main`.
+- Al fusionar un PR se borra su rama (botón **Delete branch**).
 - Antes de empezar: `git pull`.
 - Se fusiona a `main` con un Pull Request que **revisa el otro**. En la defensa el profe elige a uno de los dos al azar, así que los dos tenemos que conocer todo el código.
 - **Excepción, arreglos pequeños**: si el PR solo corrige un error menor (una errata, un enlace roto, un icono, una etiqueta mal escrita), lo puede fusionar el mismo que lo ha hecho, sin esperar al otro. Se avisa por el grupo con el enlace del PR para que el otro lo vea.

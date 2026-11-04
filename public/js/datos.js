@@ -48,3 +48,15 @@ function guardarCursos(cursos) {
         return false;
     }
 }
+
+// Nombre completo del docente con ese id, o un texto si no se encuentra.
+function nombreDocente(idDocente) {
+    const docente = DOCENTES.find(function (d) { return d.id_docente === idDocente; });
+    return docente ? docente.nombre + ' ' + docente.apellidos : 'Sin docente';
+}
+
+// Nombre del aula con ese id, o un texto si no se encuentra.
+function nombreAula(idAula) {
+    const aula = AULAS.find(function (a) { return a.id_aula === idAula; });
+    return aula ? aula.nombre : 'Sin aula';
+}

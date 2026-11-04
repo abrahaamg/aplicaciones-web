@@ -8,7 +8,8 @@ if(formRegistro) {
     const apellidos = document.getElementById('apellidos');
     const email = document.getElementById('email');
     const password = document.getElementById('password');
-    const confirmPassword = document.getElementById('confirmar-password');
+    const confirmPassword = document.getElementById('confirm-password'); // id corregido
+    const errorConfirmPassword = document.getElementById('error-confirm-password');
 
     // Mensaje de confirmación
     const mensajeConfirmacion = document.getElementById('mensaje-confirmacion');
@@ -43,12 +44,17 @@ if(formRegistro) {
 
     // Validar confirmación de contraseña
     function validarConfirmPassword() {
-        const invalido = confirmPassword.value.length < 8 || confirmPassword.value !== password.value;
+        const vacio = confirmPassword.value === '';
+        const invalido = vacio || confirmPassword.value !== password.value;
+
+        errorConfirmPassword.textContent = vacio
+            ? 'Por favor, confirme su contraseña.'
+            : 'Las contraseñas no coinciden.';
 
         confirmPassword.classList.toggle('is-invalid', invalido);
         return !invalido;
     }
-    
+
     // Validar mientras se escriben los datos
     nombre.addEventListener('input', validarNombre);
     apellidos.addEventListener('input', validarApellidos);
@@ -56,7 +62,15 @@ if(formRegistro) {
     confirmPassword.addEventListener('input', validarConfirmPassword);
     password.addEventListener('input', () => {
         validarPassword();
-        validarConfirmPassword();
+        // Solo se comprueba si el usuario ya ha escrito algo en la confirmación
+        if (confirmPassword.value !== '') {
+            validarConfirmPassword();
+        }
+    });
+
+    // Ocultar el mensaje de éxito si el usuario vuelve a escribir
+    formRegistro.addEventListener('input', () => {
+        mensajeConfirmacion.classList.add('d-none');
     });
 
     // Procesar el formulario
@@ -85,6 +99,8 @@ if(formRegistro) {
             // Quitar posibles estados de validación
             const campos = formRegistro.querySelectorAll('.form-control');
             campos.forEach(campo => campo.classList.remove('is-invalid'));
+        } else {
+            mensajeConfirmacion.classList.add('d-none');
         }
     });
 }

@@ -20,3 +20,21 @@ function aplicarPreferencias() {
 }
 
 aplicarPreferencias();
+
+// Enseña un aviso de Bootstrap arriba del contenido de la página.
+// tipo: 'danger' (por defecto), 'success', 'warning' o 'info'.
+function mostrarAlerta(mensaje, tipo = 'danger') {
+    const alerta = document.createElement('div');
+    alerta.className = 'alert alert-' + tipo + ' alert-dismissible';
+    alerta.setAttribute('role', 'alert');
+    alerta.textContent = mensaje;
+
+    const cerrar = document.createElement('button');
+    cerrar.type = 'button';
+    cerrar.className = 'btn-close';
+    cerrar.setAttribute('data-bs-dismiss', 'alert');
+    cerrar.setAttribute('aria-label', 'Cerrar');
+    alerta.append(cerrar);
+
+    document.getElementById('contenido').prepend(alerta);
+}

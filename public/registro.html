@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- CABECERA: igual en todas las páginas -->
+    <div id="navbar"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="contenido" tabindex="-1" class="flex-grow-1 py-4">
+      <div class="container">
+        <h1>Registro de usuario</h1>
+
+        <!-- Formulario de registro -->
+        <form
+          id="formulario-registro"
+          action="/registro"
+          method="post"
+          novalidate
+        >
+          <!-- Nombre completo -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nombre"
+              name="nombre"
+              required
+              maxlength="50"
+            />
+            <div
+              id="error-nombre"
+              class="text-danger mt-1"
+              style="display: none"
+            >
+              Por favor, ingrese su nombre (máximo 50 caracteres).
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="apellidos" class="form-label">Apellidos</label>
+            <input
+              type="text"
+              class="form-control"
+              id="apellidos"
+              name="apellidos"
+              required
+              maxlength="50"
+            />
+            <div
+              id="error-apellidos"
+              class="text-danger mt-1"
+              style="display: none"
+            >
+              Por favor, ingrese sus apellidos (máximo 50 caracteres).
+            </div>
+          </div>
+
+          <!-- Correo electrónico -->
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              required
+            />
+            <div
+              id="error-email"
+              class="text-danger mt-1"
+              style="display: none"
+            >
+              Por favor, ingrese un correo electrónico válido.
+            </div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              required
+              minlength="8"
+            />
+            <div
+              id="error-password"
+              class="text-danger mt-1"
+              style="display: none"
+            >
+              Por favor, ingrese una contraseña válida (mínimo 8 caracteres).
+            </div>
+          </div>
+
+          <!-- Confirmar Contraseña -->
+          <div class="mb-3">
+            <label for="confirm_password" class="form-label"
+              >Confirmar contraseña</label
+            >
+            <input
+              type="password"
+              class="form-control"
+              id="confirm_password"
+              name="confirm_password"
+              required
+              minlength="8"
+            />
+            <div
+              id="error-confirm_password"
+              class="text-danger mt-1"
+              style="display: none"
+            >
+              Por favor, ingrese la contraseña de confirmación (mínimo 8
+              caracteres).
+            </div>
+          </div>
+
+          <!-- Botón de envío -->
+          <button type="submit" class="btn btn-primary">Registrarse</button>
+        </form>
+      </div>
+    </main>
+
+    <!-- PIE: igual en todas las páginas -->
+    <div id="footer"></div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/comun.js"></script>
+    <script src="js/registro.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/components.js"></script>
+  </body>
+</html>

@@ -2,7 +2,9 @@
 
 const contenedorCursos = document.getElementById('lista-cursos');
 const cajaBusqueda = document.getElementById('buscar-curso');
+const modalBorrar = new bootstrap.Modal(document.getElementById('modal-borrar'));
 let cursos = [];
+let idCursoABorrar = null;
 
 // Crea un elemento con su clase y su texto
 function crearElemento(etiqueta, clase, texto) {
@@ -58,6 +60,16 @@ function crearTarjeta(curso) {
     enlace.append(crearElemento('span', 'visually-hidden', ' de ' + curso.nombre));
     cuerpo.append(enlace);
 
+    const botonBorrar = crearElemento('button', 'btn btn-outline-danger ms-2', '');
+    botonBorrar.type = 'button';
+    const icono = crearElemento('i', 'bi bi-trash', '');
+    icono.setAttribute('aria-hidden', 'true');
+    botonBorrar.append(icono, crearElemento('span', 'visually-hidden', 'Borrar ' + curso.nombre));
+    botonBorrar.addEventListener('click', function () {
+        pedirConfirmacionBorrar(curso);
+    });
+    cuerpo.append(botonBorrar);
+
     tarjeta.append(cuerpo);
     columna.append(tarjeta);
     return columna;
@@ -82,8 +94,8 @@ try {
     cajaBusqueda.disabled = true;
 }
 
-// Buscador: filtra la lista mientras se escribe, por nombre y descripción
-cajaBusqueda.addEventListener('input', function () {
+// Buscador: pinta solo los cursos cuyo nombre o descripción contienen lo escrito
+function filtrarCursos() {
     const texto = cajaBusqueda.value.trim().toLowerCase();
     if (texto === '') {
         pintarCursos(cursos);
@@ -94,4 +106,27 @@ cajaBusqueda.addEventListener('input', function () {
             || curso.descripcion.toLowerCase().includes(texto);
     });
     pintarCursos(encontrados, 'No hay cursos que coincidan con la búsqueda.');
+}
+
+cajaBusqueda.addEventListener('input', filtrarCursos);
+
+// Borrar: la papelera abre el modal y solo se borra al confirmar
+function pedirConfirmacionBorrar(curso) {
+    idCursoABorrar = curso.id_curso;
+    document.getElementById('nombre-curso-borrar').textContent = curso.nombre;
+    modalBorrar.show();
+}
+
+document.getElementById('confirmar-borrar').addEventListener('click', function () {
+    const curso = cursos.find(function (c) { return c.id_curso === idCursoABorrar; });
+    const restantes = cursos.filter(function (c) { return c.id_curso !== idCursoABorrar; });
+    modalBorrar.hide();
+
+    if (!guardarCursos(restantes)) {
+        mostrarAlerta('No se ha podido borrar el curso. Inténtalo de nuevo.');
+        return;
+    }
+    cursos = restantes;
+    filtrarCursos();
+    mostrarAlerta('Curso "' + curso.nombre + '" borrado.', 'success');
 });

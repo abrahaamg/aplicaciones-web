@@ -214,6 +214,7 @@ a {
   border-radius: 25px;
   font-weight: 600;
   text-align: center;
+  text-decoration: none !important;
   transition: all 0.3s ease;
   border: 2px solid transparent;
 }
@@ -224,4 +225,33 @@ a {
   border: 2px solid #9a1b34;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(154, 27, 52, 0.4);
+}
+
+/* ===== Formulario de registro ===== */
+
+#formulario-registro {
+  max-width: 500px;
+}
+
+#formulario-registro .form-control {
+  width: 100%;
+  max-width: 420px;
+  padding: 11px 16px;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  background-color: #fafafa;
+  font-size: 15px;
+  transition: all 0.25s ease;
+}
+
+#formulario-registro .form-control:focus {
+  border-color: #9a1b34;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(154, 27, 52, 0.15);
+}
+
+#formulario-registro .form-label {
+  font-weight: 600;
+  color: #33010c;
+  margin-bottom: 7px;
 }

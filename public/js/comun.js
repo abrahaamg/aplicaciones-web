@@ -2,6 +2,18 @@
 // y antes del JS propio de cada página.
 
 const CLAVE_PREFERENCIAS = 'preferencias';
+// El inicio de sesión guarda aquí al usuario; al cerrar sesión se borra
+const CLAVE_SESION = 'sesion';
+
+// true si hay alguien con la sesión iniciada
+function haySesion() {
+    try {
+        return localStorage.getItem(CLAVE_SESION) !== null;
+    } catch {
+        // Si el navegador no deja leer, se trata como sin sesión
+        return false;
+    }
+}
 
 // Lee las preferencias de accesibilidad guardadas y las aplica a <html>
 function aplicarPreferencias() {

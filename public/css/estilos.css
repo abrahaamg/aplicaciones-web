@@ -86,27 +86,15 @@ a {
     color: #ffffff;
 }
 
-/* Cuadros de acceso rápido, uno por sección de la web */
-.acceso {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-height: 8.5rem;
-    padding: 1rem;
+/* Recuadro con los pasos para matricularse */
+.pasos-matricula {
+    padding: 1.5rem;
     background-color: rgba(255, 255, 255, 0.12);
     border-bottom: 4px solid #ffffff;
-    color: #ffffff;
-    font-weight: 600;
-    text-decoration: none;
 }
 
-.acceso:hover {
-    background-color: rgba(255, 255, 255, 0.24);
-    color: #ffffff;
-}
-
-.acceso .bi {
-    font-size: 2rem;
+.pasos-matricula li {
+    margin-bottom: 0.75rem;
 }
 
 /* ===== Secciones de la portada ===== */

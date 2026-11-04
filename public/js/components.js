@@ -37,5 +37,18 @@ function marcarPaginaActual() {
     });
 }
 
-cargarComponente('navbar', 'components/navbar.html').then(marcarPaginaActual);
+// Enseña los enlaces del menú que solo tienen sentido con la sesión iniciada
+function mostrarEnlacesDeSesion() {
+    if (!haySesion()) {
+        return;
+    }
+    document.querySelectorAll('#navbar [data-requiere-sesion]').forEach(function (elemento) {
+        elemento.classList.remove('d-none');
+    });
+}
+
+cargarComponente('navbar', 'components/navbar.html').then(function () {
+    marcarPaginaActual();
+    mostrarEnlacesDeSesion();
+});
 cargarComponente('footer', 'components/footer.html');

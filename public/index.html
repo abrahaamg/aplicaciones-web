@@ -16,9 +16,125 @@
     <div id="navbar"></div>
 
     <!-- CONTENIDO: lo único que cambia entre páginas -->
-    <main id="contenido" class="container my-4 flex-grow-1">
-        <h1>Centro de Formación</h1>
-        <p>Consulta nuestra oferta formativa y matricúlate en los cursos disponibles.</p>
+    <main id="contenido" class="flex-grow-1">
+
+        <!-- Presentación y accesos directos -->
+        <section class="portada py-5" aria-labelledby="titulo-portada">
+            <div class="container">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-6">
+                        <h1 id="titulo-portada" class="display-5 fw-bold">Centro de Formación</h1>
+                        <p class="lead">Formación práctica en programación, diseño web y bases de datos. Consulta la oferta, elige tu curso y matricúlate.</p>
+                        <a class="btn btn-light btn-lg" href="cursos.html">Ver los cursos</a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="pasos-matricula">
+                            <h2 class="h4">Cómo matricularte</h2>
+                            <ol class="mb-0">
+                                <li><strong>Regístrate</strong> con tu correo y tus datos personales.</li>
+                                <li><strong>Elige un curso</strong> de la oferta y revisa fechas, horario y plazas libres.</li>
+                                <li><strong>Confirma la matrícula</strong> y síguela desde tu perfil.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agenda y novedades -->
+        <section class="container my-5" aria-label="Agenda y novedades">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <h2 class="titulo-seccion">Agenda</h2>
+                    <ul class="list-unstyled">
+                        <li class="d-flex mb-3">
+                            <span class="fecha-agenda me-3"><strong>12</strong> nov</span>
+                            <span>Jornada de puertas abiertas: conoce las aulas y al equipo docente.</span>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <span class="fecha-agenda me-3"><strong>16</strong> nov</span>
+                            <span>Taller de introducción a la programación, abierto a todo el mundo.</span>
+                        </li>
+                        <li class="d-flex mb-3">
+                            <span class="fecha-agenda me-3"><strong>23</strong> nov</span>
+                            <span>Comienzan los cursos del segundo trimestre.</span>
+                        </li>
+                        <li class="d-flex">
+                            <span class="fecha-agenda me-3"><strong>30</strong> nov</span>
+                            <span>Último día para matricularse con plaza reservada.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="titulo-seccion">Novedades</h2>
+                    <ul class="lista-novedades">
+                        <li>Abierto el plazo de matrícula para los cursos del segundo trimestre.</li>
+                        <li>Nuevo laboratorio de informática con 20 puestos para las clases prácticas.</li>
+                        <li>Ya puedes ajustar el tamaño de letra y el contraste desde la página de accesibilidad.</li>
+                        <li>Nuevo curso de bases de datos para quienes ya conocen los fundamentos.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cifras del centro -->
+        <section class="bg-superficie py-5" aria-labelledby="titulo-cifras">
+            <div class="container">
+                <h2 id="titulo-cifras" class="titulo-seccion">El centro en cifras</h2>
+                <div class="row g-4 text-center">
+                    <div class="col-6 col-md-3">
+                        <p class="cifra mb-0">30</p>
+                        <p>cursos en la oferta formativa</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="cifra mb-0">18</p>
+                        <p>docentes con experiencia en el sector</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="cifra mb-0">12</p>
+                        <p>aulas y laboratorios equipados</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="cifra mb-0">900</p>
+                        <p>alumnos matriculados este curso</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Oferta por áreas -->
+        <section class="container my-5" aria-labelledby="titulo-areas">
+            <h2 id="titulo-areas" class="titulo-seccion">Estudia con nosotros</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 tarjeta-area">
+                        <div class="card-body">
+                            <i class="bi bi-code-slash icono-area" aria-hidden="true"></i>
+                            <h3 class="h5 card-title">Programación</h3>
+                            <p class="card-text">Desde los primeros pasos con la lógica y los datos hasta crear tus propias aplicaciones.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 tarjeta-area">
+                        <div class="card-body">
+                            <i class="bi bi-palette icono-area" aria-hidden="true"></i>
+                            <h3 class="h5 card-title">Diseño web</h3>
+                            <p class="card-text">Páginas claras, bonitas y adaptadas a cualquier pantalla, con las herramientas que usa el sector.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 tarjeta-area">
+                        <div class="card-body">
+                            <i class="bi bi-database icono-area" aria-hidden="true"></i>
+                            <h3 class="h5 card-title">Bases de datos</h3>
+                            <p class="card-text">Aprende a organizar, consultar y mantener la información de una aplicación.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- PIE: igual en todas las páginas, se carga desde components/footer.html -->

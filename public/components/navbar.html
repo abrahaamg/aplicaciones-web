@@ -1,9 +1,12 @@
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Menú principal">
+    <nav class="navbar navbar-expand-xl navbar-centro" aria-label="Menú principal">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <img src="img/logo.svg" alt="" width="32" height="32" class="me-2">
-                Centro de Formación
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="img/logo.svg" alt="" width="44" height="44" class="me-2">
+                <span class="lh-sm">
+                    <span class="d-block fw-bold">Centro de Formación</span>
+                    <span class="d-block small fw-normal">Cursos, docentes y aulas</span>
+                </span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
                     aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
@@ -16,9 +19,16 @@
                     <li class="nav-item"><a class="nav-link" href="docentes.html">Docentes</a></li>
                     <li class="nav-item"><a class="nav-link" href="aulas.html">Aulas</a></li>
                     <li class="nav-item"><a class="nav-link" href="mis-matriculas.html">Mis matrículas</a></li>
-                    <li class="nav-item"><a class="nav-link" href="perfil.html">Perfil</a></li>
                     <li class="nav-item"><a class="nav-link" href="accesibilidad.html">Accesibilidad</a></li>
-                    <li class="nav-item"><a class="nav-link" href="admin.html">Administración</a></li>
+                    <li class="nav-item d-none" data-requiere-sesion><a class="nav-link" href="admin.html">Administración</a></li>
+                </ul>
+                <ul class="navbar-nav ms-xl-3">
+                    <li class="nav-item d-none" data-requiere-sesion>
+                        <a class="nav-link enlace-avatar" href="perfil.html">
+                            <i class="bi bi-person-circle" aria-hidden="true"></i>
+                            <span class="visually-hidden">Mi perfil</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

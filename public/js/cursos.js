@@ -1,6 +1,7 @@
 // Catálogo de cursos: pinta una tarjeta por cada curso guardado.
 
 const contenedorCursos = document.getElementById('lista-cursos');
+const cajaBusqueda = document.getElementById('buscar-curso');
 let cursos = [];
 
 // Crea un elemento con su clase y su texto
@@ -78,4 +79,19 @@ try {
     pintarCursos(cursos);
 } catch {
     mostrarAlerta('No se han podido cargar los cursos. Recarga la página para intentarlo de nuevo.');
+    cajaBusqueda.disabled = true;
 }
+
+// Buscador: filtra la lista mientras se escribe, por nombre y descripción
+cajaBusqueda.addEventListener('input', function () {
+    const texto = cajaBusqueda.value.trim().toLowerCase();
+    if (texto === '') {
+        pintarCursos(cursos);
+        return;
+    }
+    const encontrados = cursos.filter(function (curso) {
+        return curso.nombre.toLowerCase().includes(texto)
+            || curso.descripcion.toLowerCase().includes(texto);
+    });
+    pintarCursos(encontrados, 'No hay cursos que coincidan con la búsqueda.');
+});

@@ -1,29 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="img/logo.svg" type="image/svg+xml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="img/logo.svg" type="image/svg+xml" />
     <title>Administración | Centro de Formación</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="css/estilos.css">
-</head>
-<body class="d-flex flex-column min-vh-100">
-    <a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <a class="visually-hidden-focusable" href="#contenido"
+      >Saltar al contenido</a
+    >
 
     <div id="navbar"></div>
 
     <main id="contenido" class="container my-4 flex-grow-1">
-        <nav aria-label="Ruta de navegación">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Administración</li>
-            </ol>
-        </nav>
+      <nav aria-label="Ruta de navegación">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Administración
+          </li>
+        </ol>
+      </nav>
 
-        <h1>Administración</h1>
-        <p>Gestión de cursos, docentes, aulas, usuarios y matrículas.</p>
+      <h1>Administración</h1>
+      <p>Gestión de cursos, docentes, aulas, usuarios y matrículas.</p>
+
+      <section class="mt-4">
+        <h2>Añadir curso</h2>
+
+        <form id="formulario-curso" novalidate>
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" required />
+            <div class="invalid-feedback">Introduce el nombre del curso.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea
+              class="form-control"
+              id="descripcion"
+              rows="3"
+              required
+            ></textarea>
+            <div class="invalid-feedback">Introduce una descripción.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="docente" class="form-label">Docente</label>
+            <select class="form-select" id="docente" required>
+              <option value="">Selecciona un docente</option>
+            </select>
+            <div class="invalid-feedback">Selecciona un docente.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="aula" class="form-label">Aula</label>
+            <select class="form-select" id="aula" required>
+              <option value="">Selecciona un aula</option>
+            </select>
+            <div class="invalid-feedback">Selecciona un aula.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="fecha-inicio" class="form-label">Fecha de inicio</label>
+            <input
+              type="date"
+              class="form-control"
+              id="fecha-inicio"
+              required
+            />
+            <div class="invalid-feedback">
+              Introduce una fecha de inicio válida.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="fecha-fin" class="form-label">Fecha de fin</label>
+            <input type="date" class="form-control" id="fecha-fin" required />
+            <div class="invalid-feedback">
+              La fecha de fin debe ser posterior a la de inicio.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="horario" class="form-label">Horario</label>
+            <input type="text" class="form-control" id="horario" required />
+            <div class="invalid-feedback">Introduce el horario del curso.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="plazas" class="form-label">Plazas</label>
+            <input
+              type="number"
+              class="form-control"
+              id="plazas"
+              min="1"
+              required
+            />
+            <div class="invalid-feedback">
+              Introduce un número de plazas mayor que 0.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="imagen" class="form-label">Imagen (ruta)</label>
+            <input type="text" class="form-control" id="imagen" />
+          </div>
+
+          <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select class="form-select" id="estado" required>
+              <option value="">Selecciona un estado</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+            <div class="invalid-feedback">Selecciona un estado.</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Añadir curso</button>
+        </form>
+      </section>
     </main>
 
     <div id="footer"></div>
@@ -31,5 +132,7 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/comun.js"></script>
     <script src="js/components.js"></script>
-</body>
+    <script src="js/datos.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
 </html>

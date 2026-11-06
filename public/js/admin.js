@@ -1,92 +1,100 @@
 
-// Obtener el formulario
+// Obtener elementos principales
 const formularioCurso = document.getElementById('formulario-curso');
+const listaCursos = document.getElementById('lista-cursos');
 
-// Comprobar que estamos en la página de administración
 if (formularioCurso) {
 
-    // Obtener los campos del formulario
-    const nombre = document.getElementById('nombre');
-    const descripcion = document.getElementById('descripcion');
-    const docente = document.getElementById('docente');
-    const aula = document.getElementById('aula');
-    const fechaInicio = document.getElementById('fecha-inicio');
-    const fechaFin = document.getElementById('fecha-fin');
-    const horario = document.getElementById('horario');
-    const plazas = document.getElementById('plazas');
-    const imagen = document.getElementById('imagen');
-    const estado = document.getElementById('estado');
+    // Obtener campos del formulario
+    const camposFormulario = {
+        nombre: document.getElementById('nombre'),
+        descripcion: document.getElementById('descripcion'),
+        docente: document.getElementById('docente'),
+        aula: document.getElementById('aula'),
+        fechaInicio: document.getElementById('fecha-inicio'),
+        fechaFin: document.getElementById('fecha-fin'),
+        horario: document.getElementById('horario'),
+        plazas: document.getElementById('plazas'),
+        imagen: document.getElementById('imagen'),
+        estado: document.getElementById('estado')
+    };
 
-    // Obtener el contenedor de los cursos
-    const listaCursos = document.getElementById('lista-cursos');
-
-    // Rellenar el desplegable de docentes
+    // Rellenar desplegables del formulario
     DOCENTES.forEach(function (d) {
-        const opcion = document.createElement('option');
-        opcion.value = d.id_docente;
-        opcion.textContent = d.nombre + ' ' + d.apellidos;
-        docente.appendChild(opcion);
+        camposFormulario.docente.add(new Option(
+            d.nombre + ' ' + d.apellidos, d.id_docente
+        ));
     });
 
-    // Rellenar el desplegable de aulas
     AULAS.forEach(function (a) {
-        const opcion = document.createElement('option');
-        opcion.value = a.id_aula;
-        opcion.textContent = a.nombre;
-        aula.appendChild(opcion);
+        camposFormulario.aula.add(new Option(a.nombre, a.id_aula));
     });
 
-    // Validar el formulario al enviarlo
+
+    // Obtener los valores de un conjunto de campos
+    function obtenerValores(campos) {
+        const valores = {};
+
+        Object.keys(campos).forEach(function (clave) {
+            valores[clave] = campos[clave].value;
+        });
+
+        return valores;
+    }
+
+
+    // Validar los campos de un curso
+    function validarCurso(valores, campos) {
+        const valido = {
+            nombre: valores.nombre.trim() !== '',
+            descripcion: valores.descripcion.trim() !== '',
+            docente: DOCENTES.some(d => d.id_docente === Number(valores.docente)),
+            aula: AULAS.some(a => a.id_aula === Number(valores.aula)),
+            fechaInicio: valores.fechaInicio !== '',
+            fechaFin: valores.fechaFin !== '' &&
+                valores.fechaInicio !== '' &&
+                valores.fechaFin > valores.fechaInicio,
+            horario: valores.horario.trim() !== '',
+            plazas: valores.plazas !== '' &&
+                Number.isFinite(Number(valores.plazas)) &&
+                Number(valores.plazas) > 0,
+            estado: ['activo', 'inactivo'].includes(valores.estado)
+        };
+
+        Object.keys(valido).forEach(function (clave) {
+            campos[clave].classList.toggle('is-invalid', !valido[clave]);
+        });
+
+        return Object.values(valido).every(Boolean);
+    }
+
+
+    // Construir un objeto curso con los valores recibidos
+    function crearCurso(valores, id) {
+        return {
+            id_curso: id,
+            nombre: valores.nombre.trim(),
+            descripcion: valores.descripcion.trim(),
+            id_docente: Number(valores.docente),
+            id_aula: Number(valores.aula),
+            fecha_inicio: valores.fechaInicio,
+            fecha_fin: valores.fechaFin,
+            horario: valores.horario.trim(),
+            plazas: Number(valores.plazas),
+            imagen: valores.imagen.trim(),
+            estado: valores.estado
+        };
+    }
+
+
+    // Añadir un curso
     formularioCurso.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        // Comprobar cada campo
-        const nombreValido = nombre.value.trim() !== '';
-        const descripcionValida = descripcion.value.trim() !== '';
-        const docenteValido = DOCENTES.some(function (d) {
-            return d.id_docente === Number(docente.value);
-        });
-        const aulaValida = AULAS.some(function (a) {
-            return a.id_aula === Number(aula.value);
-        });
-        const fechaInicioValida = fechaInicio.value !== '';
-        const fechaFinValida = fechaFin.value !== '' &&
-            fechaInicioValida &&
-            fechaFin.value > fechaInicio.value;
-        const horarioValido = horario.value.trim() !== '';
-        const plazasValidas = plazas.value !== '' &&
-            Number.isFinite(Number(plazas.value)) &&
-            Number(plazas.value) > 0;
-        const estadoValido = estado.value === 'activo' ||
-            estado.value === 'inactivo';
+        const valores = obtenerValores(camposFormulario);
 
-        // Gestionar los errores
-        nombre.classList.toggle('is-invalid', !nombreValido);
-        descripcion.classList.toggle('is-invalid', !descripcionValida);
-        docente.classList.toggle('is-invalid', !docenteValido);
-        aula.classList.toggle('is-invalid', !aulaValida);
-        fechaInicio.classList.toggle('is-invalid', !fechaInicioValida);
-        fechaFin.classList.toggle('is-invalid', !fechaFinValida);
-        horario.classList.toggle('is-invalid', !horarioValido);
-        plazas.classList.toggle('is-invalid', !plazasValidas);
-        estado.classList.toggle('is-invalid', !estadoValido);
+        if (!validarCurso(valores, camposFormulario)) return;
 
-        // Si hay algún campo incorrecto, no guardar
-        if (
-            !nombreValido ||
-            !descripcionValida ||
-            !docenteValido ||
-            !aulaValida ||
-            !fechaInicioValida ||
-            !fechaFinValida ||
-            !horarioValido ||
-            !plazasValidas ||
-            !estadoValido
-        ) {
-            return;
-        }
-
-        // Cargar los cursos existentes
         let cursos;
 
         try {
@@ -96,44 +104,225 @@ if (formularioCurso) {
             return;
         }
 
-        // Calcular el siguiente identificador
         const nuevoId = cursos.reduce(function (maximo, curso) {
             return Math.max(maximo, Number(curso.id_curso) || 0);
         }, 0) + 1;
 
-        // Crear el nuevo curso
-        const nuevoCurso = {
-            id_curso: nuevoId,
-            nombre: nombre.value.trim(),
-            descripcion: descripcion.value.trim(),
-            id_docente: Number(docente.value),
-            id_aula: Number(aula.value),
-            fecha_inicio: fechaInicio.value,
-            fecha_fin: fechaFin.value,
-            horario: horario.value.trim(),
-            plazas: Number(plazas.value),
-            imagen: imagen.value.trim(),
-            estado: estado.value
-        };
-
-        // Añadir el curso y guardar los cambios
-        cursos.push(nuevoCurso);
+        cursos.push(crearCurso(valores, nuevoId));
 
         if (guardarCursos(cursos)) {
             alert('¡Curso añadido correctamente!');
             formularioCurso.reset();
 
-            // Quitar los estados de error
-            formularioCurso.querySelectorAll('.is-invalid').forEach(function (campo) {
+            Object.values(camposFormulario).forEach(function (campo) {
                 campo.classList.remove('is-invalid');
             });
+
             mostrarCursos();
         } else {
             alert('No se pudo guardar el curso.');
         }
     });
 
-    // Mostrar los cursos existentes
+
+    // Crear un campo editable
+    function crearCampo(titulo, tipo, valor, opciones = [], mensajeError = '') {
+        const contenedor = document.createElement('div');
+        contenedor.className = 'mb-3';
+
+        const etiqueta = document.createElement('label');
+        etiqueta.className = 'form-label';
+        etiqueta.textContent = titulo;
+
+        const campo = document.createElement(
+            tipo === 'textarea' ? 'textarea' : tipo === 'select' ? 'select' : 'input'
+        );
+
+        campo.className = tipo === 'select' ? 'form-select' : 'form-control';
+
+        if (tipo === 'textarea') campo.rows = 2;
+        else if (tipo !== 'select') campo.type = tipo;
+
+        opciones.forEach(function (opcion) {
+            campo.add(new Option(opcion.texto, opcion.value));
+        });
+
+        campo.value = valor ?? '';
+
+        if (tipo === 'number') campo.min = 1;
+
+        const error = document.createElement('div');
+        error.className = 'invalid-feedback';
+        error.textContent = mensajeError;
+
+        contenedor.append(etiqueta, campo, error);
+
+        return { contenedor, campo };
+    }
+
+
+    // Crear una tarjeta de curso
+    function crearTarjetaCurso(curso, modoEdicion = false) {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'col-md-6 col-lg-4';
+
+        const cuerpo = document.createElement('div');
+        cuerpo.className = 'card h-100';
+
+        const contenido = document.createElement('div');
+        contenido.className = 'card-body';
+
+        cuerpo.appendChild(contenido);
+        tarjeta.appendChild(cuerpo);
+
+        if (modoEdicion) {
+
+            // Configuración de los campos editables
+            const configuracion = {
+                nombre: ['Nombre', 'text', curso.nombre, [], 'Introduce el nombre del curso.'],
+                descripcion: ['Descripción', 'textarea', curso.descripcion, [], 'Introduce una descripción.'],
+                docente: ['Docente', 'select', curso.id_docente,
+                    DOCENTES.map(d => ({ value: d.id_docente, texto: d.nombre + ' ' + d.apellidos })),
+                    'Selecciona un docente.'],
+                aula: ['Aula', 'select', curso.id_aula,
+                    AULAS.map(a => ({ value: a.id_aula, texto: a.nombre })),
+                    'Selecciona un aula.'],
+                fechaInicio: ['Fecha de inicio', 'date', curso.fecha_inicio, [], 'Introduce una fecha de inicio válida.'],
+                fechaFin: ['Fecha de fin', 'date', curso.fecha_fin, [], 'La fecha de fin debe ser posterior a la de inicio.'],
+                horario: ['Horario', 'text', curso.horario, [], 'Introduce el horario del curso.'],
+                plazas: ['Plazas', 'number', curso.plazas, [], 'Introduce un número de plazas mayor que 0.'],
+                imagen: ['Imagen (ruta)', 'text', curso.imagen || ''],
+                estado: ['Estado', 'select', curso.estado,
+                    [
+                        { value: 'activo', texto: 'Activo' },
+                        { value: 'inactivo', texto: 'Inactivo' }
+                    ],
+                    'Selecciona un estado.']
+            };
+
+            const campos = {};
+
+            Object.entries(configuracion).forEach(function ([clave, datos]) {
+                campos[clave] = crearCampo(...datos);
+                contenido.appendChild(campos[clave].contenedor);
+            });
+
+            // Obtener los campos HTML para validar y guardar
+            const camposHTML = {};
+
+            Object.keys(campos).forEach(function (clave) {
+                camposHTML[clave] = campos[clave].campo;
+            });
+
+            // Botón cancelar
+            const cancelar = document.createElement('button');
+            cancelar.type = 'button';
+            cancelar.className = 'btn btn-secondary me-2';
+            cancelar.textContent = 'Cancelar';
+
+            cancelar.addEventListener('click', function () {
+                tarjeta.replaceWith(crearTarjetaCurso(curso));
+            });
+
+            // Botón confirmar
+            const confirmar = document.createElement('button');
+            confirmar.type = 'button';
+            confirmar.className = 'btn btn-success';
+            confirmar.textContent = 'Confirmar';
+
+            confirmar.addEventListener('click', function () {
+                confirmarEdicion(curso, camposHTML);
+            });
+
+            contenido.append(cancelar, confirmar);
+
+        } else {
+
+            // Mostrar información del curso
+            const titulo = document.createElement('h5');
+            titulo.className = 'card-title';
+            titulo.textContent = curso.nombre;
+            contenido.appendChild(titulo);
+
+            function agregarDato(etiqueta, valor) {
+                const parrafo = document.createElement('p');
+                parrafo.className = 'card-text';
+
+                const negrita = document.createElement('strong');
+                negrita.textContent = etiqueta + ': ';
+
+                const texto = document.createElement('span');
+                texto.textContent = valor ?? '';
+
+                parrafo.append(negrita, texto);
+                contenido.appendChild(parrafo);
+            }
+
+            agregarDato('Descripción', curso.descripcion);
+            agregarDato('Docente', nombreDocente(Number(curso.id_docente)));
+            agregarDato('Aula', nombreAula(Number(curso.id_aula)));
+            agregarDato('Fechas', curso.fecha_inicio + ' - ' + curso.fecha_fin);
+            agregarDato('Horario', curso.horario);
+            agregarDato('Plazas', curso.plazas);
+            agregarDato('Imagen', curso.imagen || 'Sin imagen');
+            agregarDato('Estado', curso.estado);
+
+            // Botón editar
+            const editar = document.createElement('button');
+            editar.type = 'button';
+            editar.className = 'btn btn-primary';
+            editar.textContent = 'Editar';
+
+            editar.addEventListener('click', function () {
+                tarjeta.replaceWith(crearTarjetaCurso(curso, true));
+            });
+
+            contenido.appendChild(editar);
+        }
+
+        return tarjeta;
+    }
+
+
+    // Confirmar la edición de un curso
+    function confirmarEdicion(cursoOriginal, campos) {
+        const valores = obtenerValores(campos);
+
+        if (!validarCurso(valores, campos)) return;
+
+        let cursos;
+
+        try {
+            cursos = cargarCursos();
+        } catch (error) {
+            alert('No se pudieron cargar los cursos.');
+            return;
+        }
+
+        const indice = cursos.findIndex(function (c) {
+            return Number(c.id_curso) === Number(cursoOriginal.id_curso);
+        });
+
+        if (indice === -1) {
+            alert('No se ha encontrado el curso que quieres editar.');
+            return;
+        }
+
+        cursos[indice] = {
+            ...cursos[indice],
+            ...crearCurso(valores, cursos[indice].id_curso)
+        };
+
+        if (guardarCursos(cursos)) {
+            alert('¡Curso actualizado correctamente!');
+            mostrarCursos();
+        } else {
+            alert('No se pudieron guardar los cambios.');
+        }
+    }
+
+
+    // Mostrar todos los cursos
     function mostrarCursos() {
         let cursos;
 
@@ -144,54 +333,13 @@ if (formularioCurso) {
             return;
         }
 
-        // Limpiar la lista
         listaCursos.innerHTML = '';
 
-        // Crear una tarjeta para cada curso
         cursos.forEach(function (curso) {
-
-            const tarjeta = document.createElement('div');
-            tarjeta.className = 'col-md-6 col-lg-4';
-
-            tarjeta.innerHTML = `
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">${curso.nombre}</h5>
-
-                        <p class="card-text">${curso.descripcion}</p>
-
-                        <p class="card-text">
-                            <strong>Docente:</strong> ${nombreDocente(curso.id_docente)}
-                        </p>
-
-                        <p class="card-text">
-                            <strong>Aula:</strong> ${nombreAula(curso.id_aula)}
-                        </p>
-
-                        <p class="card-text">
-                            <strong>Fechas:</strong> ${curso.fecha_inicio} - ${curso.fecha_fin}
-                        </p>
-
-                        <p class="card-text">
-                            <strong>Plazas:</strong> ${curso.plazas}
-                        </p>
-
-                        <p class="card-text">
-                            <strong>Estado:</strong> ${curso.estado}
-                        </p>
-
-                        <button type="button" class="btn btn-primary btn-editar">
-                            Editar
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            listaCursos.appendChild(tarjeta);
+            listaCursos.appendChild(crearTarjetaCurso(curso));
         });
     }
 
-    // Mostrar los cursos al cargar la página
+    // Mostrar cursos al cargar la página
     mostrarCursos();
 }
-

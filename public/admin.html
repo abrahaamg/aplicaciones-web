@@ -29,10 +29,25 @@
       <h1>Administración</h1>
       <p>Gestión de cursos, docentes, aulas, usuarios y matrículas.</p>
 
-      <section class="mt-4">
-        <h2>Añadir curso</h2>
+      <section class="mt-5">
 
-        <form id="formulario-curso" novalidate>
+  <button
+    class="btn btn-primary mb-4"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#formulario-desplegable"
+    aria-expanded="false"
+    aria-controls="formulario-desplegable"
+  >
+    <i class="bi bi-plus-circle me-2"></i>
+    Añadir curso
+  </button>
+
+  <!-- Formulario desplegable -->
+  <div class="collapse mb-4" id="formulario-desplegable">
+    <div class="card card-body">
+
+      <form id="formulario-curso" novalidate>
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
             <input type="text" class="form-control" id="nombre" required />
@@ -124,6 +139,15 @@
 
           <button type="submit" class="btn btn-primary">Añadir curso</button>
         </form>
+      </section>
+
+      <!-- Lista de cursos existentes -->
+      <section class="mt-5">
+        <h2>Cursos existentes</h2>
+
+        <div id="lista-cursos" class="row g-3">
+          <!-- Los cursos se cargarán desde admin.js -->
+        </div>
       </section>
     </main>
 

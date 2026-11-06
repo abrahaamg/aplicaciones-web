@@ -17,6 +17,9 @@ if (formularioCurso) {
     const imagen = document.getElementById('imagen');
     const estado = document.getElementById('estado');
 
+    // Obtener el contenedor de los cursos
+    const listaCursos = document.getElementById('lista-cursos');
+
     // Rellenar el desplegable de docentes
     DOCENTES.forEach(function (d) {
         const opcion = document.createElement('option');
@@ -124,8 +127,71 @@ if (formularioCurso) {
             formularioCurso.querySelectorAll('.is-invalid').forEach(function (campo) {
                 campo.classList.remove('is-invalid');
             });
+            mostrarCursos();
         } else {
             alert('No se pudo guardar el curso.');
         }
     });
+
+    // Mostrar los cursos existentes
+    function mostrarCursos() {
+        let cursos;
+
+        try {
+            cursos = cargarCursos();
+        } catch (error) {
+            alert('No se pudieron cargar los cursos.');
+            return;
+        }
+
+        // Limpiar la lista
+        listaCursos.innerHTML = '';
+
+        // Crear una tarjeta para cada curso
+        cursos.forEach(function (curso) {
+
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'col-md-6 col-lg-4';
+
+            tarjeta.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">${curso.nombre}</h5>
+
+                        <p class="card-text">${curso.descripcion}</p>
+
+                        <p class="card-text">
+                            <strong>Docente:</strong> ${nombreDocente(curso.id_docente)}
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Aula:</strong> ${nombreAula(curso.id_aula)}
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Fechas:</strong> ${curso.fecha_inicio} - ${curso.fecha_fin}
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Plazas:</strong> ${curso.plazas}
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Estado:</strong> ${curso.estado}
+                        </p>
+
+                        <button type="button" class="btn btn-primary btn-editar">
+                            Editar
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            listaCursos.appendChild(tarjeta);
+        });
+    }
+
+    // Mostrar los cursos al cargar la página
+    mostrarCursos();
 }
+

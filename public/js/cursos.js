@@ -14,11 +14,6 @@ function crearElemento(etiqueta, clase, texto) {
     return elemento;
 }
 
-// De '2026-11-16' a '16/11/2026'
-function formatearFecha(texto) {
-    return texto.split('-').reverse().join('/');
-}
-
 function crearTarjeta(curso) {
     const columna = document.createElement('div');
     columna.className = 'col-12 col-md-6 col-lg-4';

@@ -93,6 +93,11 @@ function guardarCursos(cursos) {
     }
 }
 
+// De '2026-11-16' a '16/11/2026'
+function formatearFecha(texto) {
+    return texto.split('-').reverse().join('/');
+}
+
 // Nombre completo del docente con ese id, o un texto si no se encuentra.
 function nombreDocente(idDocente) {
     const docente = DOCENTES.find(function (d) { return d.id_docente === idDocente; });

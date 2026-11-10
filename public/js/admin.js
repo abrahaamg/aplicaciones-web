@@ -3,7 +3,23 @@
 const formularioCurso = document.getElementById('formulario-curso');
 const listaCursos = document.getElementById('lista-cursos');
 
+// Mensajes de error comunes a los dos formularios
+const MENSAJES = {
+    nombre: 'Introduce un nombre con letras, no solo números.',
+    fechaInicio: 'La fecha de inicio no puede ser anterior a hoy.',
+    imagen: 'Pon la ruta de una imagen (.jpg, .png, .webp o .svg), por ejemplo img/curso.jpg.'
+};
+
 if (formularioCurso) {
+
+    // Fecha de hoy en el mismo formato que los campos de fecha: '2026-11-10'
+    function fechaDeHoy() {
+        const hoy = new Date();
+        return hoy.getFullYear() + '-' +
+            String(hoy.getMonth() + 1).padStart(2, '0') + '-' +
+            String(hoy.getDate()).padStart(2, '0');
+    }
+
 
     // Obtener campos del formulario
     const camposFormulario = {
@@ -13,11 +29,19 @@ if (formularioCurso) {
         aula: document.getElementById('aula'),
         fechaInicio: document.getElementById('fecha-inicio'),
         fechaFin: document.getElementById('fecha-fin'),
-        horario: document.getElementById('horario'),
+        horario: null,
         plazas: document.getElementById('plazas'),
         imagen: document.getElementById('imagen'),
         estado: document.getElementById('estado')
     };
+
+    // El horario del alta se monta igual que el de editar
+    const horarioAlta = crearCampoHorario('alta-horario', '');
+    document.getElementById('hueco-horario').replaceWith(horarioAlta.contenedor);
+    camposFormulario.horario = horarioAlta.campo;
+
+    // En el alta no se puede elegir una fecha pasada
+    camposFormulario.fechaInicio.min = fechaDeHoy();
 
     // Rellenar desplegables del formulario
     DOCENTES.forEach(function (d) {
@@ -36,28 +60,34 @@ if (formularioCurso) {
         const valores = {};
 
         Object.keys(campos).forEach(function (clave) {
-            valores[clave] = campos[clave].value;
+            valores[clave] = clave === 'horario' ? leerHorario(campos[clave]) : campos[clave].value;
         });
 
         return valores;
     }
 
 
-    // Validar los campos de un curso
-    function validarCurso(valores, campos) {
+    // Validar los campos de un curso. Al editar, se deja la fecha de inicio que ya tenía.
+    function validarCurso(valores, campos, original = null) {
+        const horario = valores.horario;
+        const imagen = valores.imagen.trim();
+
         const valido = {
-            nombre: valores.nombre.trim() !== '',
+            nombre: /\p{L}/u.test(valores.nombre),
             descripcion: valores.descripcion.trim() !== '',
             docente: DOCENTES.some(d => d.id_docente === Number(valores.docente)),
             aula: AULAS.some(a => a.id_aula === Number(valores.aula)),
-            fechaInicio: valores.fechaInicio !== '',
+            fechaInicio: valores.fechaInicio !== '' &&
+                (valores.fechaInicio >= fechaDeHoy() ||
+                    (original !== null && valores.fechaInicio === original.fecha_inicio)),
             fechaFin: valores.fechaFin !== '' &&
                 valores.fechaInicio !== '' &&
                 valores.fechaFin > valores.fechaInicio,
-            horario: valores.horario.trim() !== '',
+            horario: horarioValido(horario),
             plazas: valores.plazas !== '' &&
-                Number.isFinite(Number(valores.plazas)) &&
+                Number.isInteger(Number(valores.plazas)) &&
                 Number(valores.plazas) > 0,
+            imagen: imagen === '' || /^[\w\-./]+\.(jpe?g|png|webp|svg)$/i.test(imagen),
             estado: ['activo', 'inactivo'].includes(valores.estado)
         };
 
@@ -79,11 +109,22 @@ if (formularioCurso) {
             id_aula: Number(valores.aula),
             fecha_inicio: valores.fechaInicio,
             fecha_fin: valores.fechaFin,
-            horario: valores.horario.trim(),
+            horario: textoHorario(valores.horario),
             plazas: Number(valores.plazas),
             imagen: valores.imagen.trim(),
             estado: valores.estado
         };
+    }
+
+
+    // Leer los cursos guardados; si fallan, avisa en pantalla y devuelve null
+    function leerCursos() {
+        try {
+            return cargarCursos();
+        } catch {
+            mostrarAlerta('No se pudieron cargar los cursos.');
+            return null;
+        }
     }
 
 
@@ -95,14 +136,8 @@ if (formularioCurso) {
 
         if (!validarCurso(valores, camposFormulario)) return;
 
-        let cursos;
-
-        try {
-            cursos = cargarCursos();
-        } catch (error) {
-            alert('No se pudieron cargar los cursos.');
-            return;
-        }
+        const cursos = leerCursos();
+        if (!cursos) return;
 
         const nuevoId = cursos.reduce(function (maximo, curso) {
             return Math.max(maximo, Number(curso.id_curso) || 0);
@@ -111,7 +146,7 @@ if (formularioCurso) {
         cursos.push(crearCurso(valores, nuevoId));
 
         if (guardarCursos(cursos)) {
-            alert('¡Curso añadido correctamente!');
+            mostrarAlerta('Curso añadido correctamente.', 'success');
             formularioCurso.reset();
 
             Object.values(camposFormulario).forEach(function (campo) {
@@ -120,24 +155,26 @@ if (formularioCurso) {
 
             mostrarCursos();
         } else {
-            alert('No se pudo guardar el curso.');
+            mostrarAlerta('No se pudo guardar el curso.');
         }
     });
 
 
-    // Crear un campo editable
-    function crearCampo(titulo, tipo, valor, opciones = [], mensajeError = '') {
+    // Crear un campo editable con su etiqueta unida por id
+    function crearCampo(id, titulo, tipo, valor, opciones = [], mensajeError = '') {
         const contenedor = document.createElement('div');
         contenedor.className = 'mb-3';
 
         const etiqueta = document.createElement('label');
         etiqueta.className = 'form-label';
+        etiqueta.htmlFor = id;
         etiqueta.textContent = titulo;
 
         const campo = document.createElement(
             tipo === 'textarea' ? 'textarea' : tipo === 'select' ? 'select' : 'input'
         );
 
+        campo.id = id;
         campo.className = tipo === 'select' ? 'form-select' : 'form-control';
 
         if (tipo === 'textarea') campo.rows = 2;
@@ -161,8 +198,8 @@ if (formularioCurso) {
     }
 
 
-    // Crear una tarjeta de curso
-    function crearTarjetaCurso(curso, modoEdicion = false) {
+    // Crear el hueco de la tarjeta (columna, tarjeta y cuerpo)
+    function crearMarcoTarjeta() {
         const tarjeta = document.createElement('div');
         tarjeta.className = 'col-md-6 col-lg-4';
 
@@ -175,110 +212,108 @@ if (formularioCurso) {
         cuerpo.appendChild(contenido);
         tarjeta.appendChild(cuerpo);
 
-        if (modoEdicion) {
+        return { tarjeta, contenido };
+    }
 
-            // Configuración de los campos editables
-            const configuracion = {
-                nombre: ['Nombre', 'text', curso.nombre, [], 'Introduce el nombre del curso.'],
-                descripcion: ['Descripción', 'textarea', curso.descripcion, [], 'Introduce una descripción.'],
-                docente: ['Docente', 'select', curso.id_docente,
-                    DOCENTES.map(d => ({ value: d.id_docente, texto: d.nombre + ' ' + d.apellidos })),
-                    'Selecciona un docente.'],
-                aula: ['Aula', 'select', curso.id_aula,
-                    AULAS.map(a => ({ value: a.id_aula, texto: a.nombre })),
-                    'Selecciona un aula.'],
-                fechaInicio: ['Fecha de inicio', 'date', curso.fecha_inicio, [], 'Introduce una fecha de inicio válida.'],
-                fechaFin: ['Fecha de fin', 'date', curso.fecha_fin, [], 'La fecha de fin debe ser posterior a la de inicio.'],
-                horario: ['Horario', 'text', curso.horario, [], 'Introduce el horario del curso.'],
-                plazas: ['Plazas', 'number', curso.plazas, [], 'Introduce un número de plazas mayor que 0.'],
-                imagen: ['Imagen (ruta)', 'text', curso.imagen || ''],
-                estado: ['Estado', 'select', curso.estado,
-                    [
-                        { value: 'activo', texto: 'Activo' },
-                        { value: 'inactivo', texto: 'Inactivo' }
-                    ],
-                    'Selecciona un estado.']
-            };
 
-            const campos = {};
+    // Crear un botón con su acción
+    function crearBoton(texto, clase, accion) {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = clase;
+        boton.textContent = texto;
+        boton.addEventListener('click', accion);
+        return boton;
+    }
 
-            Object.entries(configuracion).forEach(function ([clave, datos]) {
-                campos[clave] = crearCampo(...datos);
-                contenido.appendChild(campos[clave].contenedor);
-            });
 
-            // Obtener los campos HTML para validar y guardar
-            const camposHTML = {};
+    // Tarjeta con el formulario para editar un curso
+    function crearTarjetaEdicion(curso) {
+        const { tarjeta, contenido } = crearMarcoTarjeta();
 
-            Object.keys(campos).forEach(function (clave) {
-                camposHTML[clave] = campos[clave].campo;
-            });
+        // Configuración de los campos editables (el horario va aparte)
+        const configuracion = {
+            nombre: ['Nombre', 'text', curso.nombre, [], MENSAJES.nombre],
+            descripcion: ['Descripción', 'textarea', curso.descripcion, [], 'Introduce una descripción.'],
+            docente: ['Docente', 'select', curso.id_docente,
+                DOCENTES.map(d => ({ value: d.id_docente, texto: d.nombre + ' ' + d.apellidos })),
+                'Selecciona un docente.'],
+            aula: ['Aula', 'select', curso.id_aula,
+                AULAS.map(a => ({ value: a.id_aula, texto: a.nombre })),
+                'Selecciona un aula.'],
+            fechaInicio: ['Fecha de inicio', 'date', curso.fecha_inicio, [], MENSAJES.fechaInicio],
+            fechaFin: ['Fecha de fin', 'date', curso.fecha_fin, [], 'La fecha de fin debe ser posterior a la de inicio.'],
+            horario: null,
+            plazas: ['Plazas', 'number', curso.plazas, [], 'Introduce un número de plazas mayor que 0.'],
+            imagen: ['Imagen (ruta)', 'text', curso.imagen || '', [], MENSAJES.imagen],
+            estado: ['Estado', 'select', curso.estado,
+                [
+                    { value: 'activo', texto: 'Activo' },
+                    { value: 'inactivo', texto: 'Inactivo' }
+                ],
+                'Selecciona un estado.']
+        };
 
-            // Botón cancelar
-            const cancelar = document.createElement('button');
-            cancelar.type = 'button';
-            cancelar.className = 'btn btn-secondary me-2';
-            cancelar.textContent = 'Cancelar';
+        // Campos HTML para validar y guardar
+        const campos = {};
 
-            cancelar.addEventListener('click', function () {
+        Object.entries(configuracion).forEach(function ([clave, datos]) {
+            const id = 'editar-' + curso.id_curso + '-' + clave;
+            const { contenedor, campo } = datos === null
+                ? crearCampoHorario(id, curso.horario)
+                : crearCampo(id, ...datos);
+            campos[clave] = campo;
+            contenido.appendChild(contenedor);
+        });
+
+        contenido.append(
+            crearBoton('Cancelar', 'btn btn-secondary me-2', function () {
                 tarjeta.replaceWith(crearTarjetaCurso(curso));
-            });
+            }),
+            crearBoton('Confirmar', 'btn btn-success', function () {
+                confirmarEdicion(curso, campos);
+            })
+        );
 
-            // Botón confirmar
-            const confirmar = document.createElement('button');
-            confirmar.type = 'button';
-            confirmar.className = 'btn btn-success';
-            confirmar.textContent = 'Confirmar';
+        return tarjeta;
+    }
 
-            confirmar.addEventListener('click', function () {
-                confirmarEdicion(curso, camposHTML);
-            });
 
-            contenido.append(cancelar, confirmar);
+    // Tarjeta con los datos de un curso y el botón de editar
+    function crearTarjetaCurso(curso) {
+        const { tarjeta, contenido } = crearMarcoTarjeta();
 
-        } else {
+        const titulo = document.createElement('h3');
+        titulo.className = 'card-title h5';
+        titulo.textContent = curso.nombre;
+        contenido.appendChild(titulo);
 
-            // Mostrar información del curso
-            const titulo = document.createElement('h5');
-            titulo.className = 'card-title';
-            titulo.textContent = curso.nombre;
-            contenido.appendChild(titulo);
+        function agregarDato(etiqueta, valor) {
+            const parrafo = document.createElement('p');
+            parrafo.className = 'card-text';
 
-            function agregarDato(etiqueta, valor) {
-                const parrafo = document.createElement('p');
-                parrafo.className = 'card-text';
+            const negrita = document.createElement('strong');
+            negrita.textContent = etiqueta + ': ';
 
-                const negrita = document.createElement('strong');
-                negrita.textContent = etiqueta + ': ';
+            const texto = document.createElement('span');
+            texto.textContent = valor ?? '';
 
-                const texto = document.createElement('span');
-                texto.textContent = valor ?? '';
-
-                parrafo.append(negrita, texto);
-                contenido.appendChild(parrafo);
-            }
-
-            agregarDato('Descripción', curso.descripcion);
-            agregarDato('Docente', nombreDocente(Number(curso.id_docente)));
-            agregarDato('Aula', nombreAula(Number(curso.id_aula)));
-            agregarDato('Fechas', curso.fecha_inicio + ' - ' + curso.fecha_fin);
-            agregarDato('Horario', curso.horario);
-            agregarDato('Plazas', curso.plazas);
-            agregarDato('Imagen', curso.imagen || 'Sin imagen');
-            agregarDato('Estado', curso.estado);
-
-            // Botón editar
-            const editar = document.createElement('button');
-            editar.type = 'button';
-            editar.className = 'btn btn-primary';
-            editar.textContent = 'Editar';
-
-            editar.addEventListener('click', function () {
-                tarjeta.replaceWith(crearTarjetaCurso(curso, true));
-            });
-
-            contenido.appendChild(editar);
+            parrafo.append(negrita, texto);
+            contenido.appendChild(parrafo);
         }
+
+        agregarDato('Descripción', curso.descripcion);
+        agregarDato('Docente', nombreDocente(Number(curso.id_docente)));
+        agregarDato('Aula', nombreAula(Number(curso.id_aula)));
+        agregarDato('Fechas', formatearFecha(curso.fecha_inicio) + ' a ' + formatearFecha(curso.fecha_fin));
+        agregarDato('Horario', curso.horario);
+        agregarDato('Plazas', curso.plazas);
+        agregarDato('Imagen', curso.imagen || 'Sin imagen');
+        agregarDato('Estado', curso.estado);
+
+        contenido.appendChild(crearBoton('Editar', 'btn btn-primary', function () {
+            tarjeta.replaceWith(crearTarjetaEdicion(curso));
+        }));
 
         return tarjeta;
     }
@@ -288,23 +323,17 @@ if (formularioCurso) {
     function confirmarEdicion(cursoOriginal, campos) {
         const valores = obtenerValores(campos);
 
-        if (!validarCurso(valores, campos)) return;
+        if (!validarCurso(valores, campos, cursoOriginal)) return;
 
-        let cursos;
-
-        try {
-            cursos = cargarCursos();
-        } catch (error) {
-            alert('No se pudieron cargar los cursos.');
-            return;
-        }
+        const cursos = leerCursos();
+        if (!cursos) return;
 
         const indice = cursos.findIndex(function (c) {
             return Number(c.id_curso) === Number(cursoOriginal.id_curso);
         });
 
         if (indice === -1) {
-            alert('No se ha encontrado el curso que quieres editar.');
+            mostrarAlerta('No se ha encontrado el curso que quieres editar.');
             return;
         }
 
@@ -314,24 +343,18 @@ if (formularioCurso) {
         };
 
         if (guardarCursos(cursos)) {
-            alert('¡Curso actualizado correctamente!');
+            mostrarAlerta('Curso actualizado correctamente.', 'success');
             mostrarCursos();
         } else {
-            alert('No se pudieron guardar los cambios.');
+            mostrarAlerta('No se pudieron guardar los cambios.');
         }
     }
 
 
     // Mostrar todos los cursos
     function mostrarCursos() {
-        let cursos;
-
-        try {
-            cursos = cargarCursos();
-        } catch (error) {
-            alert('No se pudieron cargar los cursos.');
-            return;
-        }
+        const cursos = leerCursos();
+        if (!cursos) return;
 
         listaCursos.innerHTML = '';
 

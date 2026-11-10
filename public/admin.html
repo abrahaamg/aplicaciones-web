@@ -10,10 +10,6 @@
     <link rel="stylesheet" href="css/estilos.css" />
   </head>
   <body class="d-flex flex-column min-vh-100">
-    <a class="visually-hidden-focusable" href="#contenido"
-      >Saltar al contenido</a
-    >
-
     <div id="navbar"></div>
 
     <main id="contenido" class="container my-4 flex-grow-1">
@@ -39,7 +35,7 @@
     aria-expanded="false"
     aria-controls="formulario-desplegable"
   >
-    <i class="bi bi-plus-circle me-2"></i>
+    <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>
     Añadir curso
   </button>
 
@@ -51,7 +47,7 @@
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
             <input type="text" class="form-control" id="nombre" required />
-            <div class="invalid-feedback">Introduce el nombre del curso.</div>
+            <div class="invalid-feedback">Introduce un nombre con letras, no solo números.</div>
           </div>
 
           <div class="mb-3">
@@ -90,7 +86,7 @@
               required
             />
             <div class="invalid-feedback">
-              Introduce una fecha de inicio válida.
+              La fecha de inicio no puede ser anterior a hoy.
             </div>
           </div>
 
@@ -102,11 +98,8 @@
             </div>
           </div>
 
-          <div class="mb-3">
-            <label for="horario" class="form-label">Horario</label>
-            <input type="text" class="form-control" id="horario" required />
-            <div class="invalid-feedback">Introduce el horario del curso.</div>
-          </div>
+          <!-- Días y horas: los monta admin.js, igual que en el formulario de editar -->
+          <div id="hueco-horario"></div>
 
           <div class="mb-3">
             <label for="plazas" class="form-label">Plazas</label>
@@ -124,7 +117,10 @@
 
           <div class="mb-3">
             <label for="imagen" class="form-label">Imagen (ruta)</label>
-            <input type="text" class="form-control" id="imagen" />
+            <input type="text" class="form-control" id="imagen" placeholder="img/curso.jpg" />
+            <div class="invalid-feedback">
+              Pon la ruta de una imagen (.jpg, .png, .webp o .svg), por ejemplo img/curso.jpg.
+            </div>
           </div>
 
           <div class="mb-3">
@@ -139,6 +135,8 @@
 
           <button type="submit" class="btn btn-primary">Añadir curso</button>
         </form>
+    </div>
+  </div>
       </section>
 
       <!-- Lista de cursos existentes -->
@@ -157,6 +155,7 @@
     <script src="js/comun.js"></script>
     <script src="js/components.js"></script>
     <script src="js/datos.js"></script>
+    <script src="js/horario.js"></script>
     <script src="js/admin.js"></script>
   </body>
 </html>

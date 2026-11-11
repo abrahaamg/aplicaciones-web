@@ -5,13 +5,35 @@ const CLAVE_PREFERENCIAS = 'preferencias';
 // El inicio de sesión guarda aquí al usuario; al cerrar sesión se borra
 const CLAVE_SESION = 'sesion';
 
-// true si hay alguien con la sesión iniciada
-function haySesion() {
+// Usuario con la sesión iniciada ({ correo, nombre, rol }) o null si no hay nadie
+function leerSesion() {
     try {
-        return localStorage.getItem(CLAVE_SESION) !== null;
+        return JSON.parse(localStorage.getItem(CLAVE_SESION));
     } catch {
-        // Si el navegador no deja leer, se trata como sin sesión
+        return null;
+    }
+}
+
+// Guarda al usuario como sesión iniciada (sin la contraseña). Devuelve false si no se pudo.
+function iniciarSesion(usuario) {
+    try {
+        localStorage.setItem(CLAVE_SESION, JSON.stringify({
+            correo: usuario.correo,
+            nombre: usuario.nombre,
+            rol: usuario.rol
+        }));
+        return true;
+    } catch (error) {
+        console.error('No se pudo guardar la sesión', error);
         return false;
+    }
+}
+
+function cerrarSesion() {
+    try {
+        localStorage.removeItem(CLAVE_SESION);
+    } catch (error) {
+        console.error('No se pudo cerrar la sesión', error);
     }
 }
 

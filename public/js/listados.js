@@ -36,12 +36,13 @@ function crearTarjetaListado(titulo, cursos) {
 }
 
 function mostrarListado() {
+    // Si no se pueden cargar, solo sale el aviso: no se dice "sin cursos" porque no se sabe
     let cursos;
     try {
         cursos = cargarCursos();
     } catch {
         mostrarAlerta('No se han podido cargar los cursos. Recarga la página para intentarlo de nuevo.');
-        cursos = [];
+        return;
     }
 
     const esDocentes = contenedorListado.dataset.listado === 'docentes';

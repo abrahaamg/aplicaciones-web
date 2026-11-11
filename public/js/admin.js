@@ -1,4 +1,3 @@
-
 // Obtener elementos principales
 const formularioCurso = document.getElementById('formulario-curso');
 const listaCursos = document.getElementById('lista-cursos');
@@ -36,6 +35,10 @@ if (formularioCurso && accesoPermitido) {
             String(hoy.getDate()).padStart(2, '0');
     }
 
+
+    // Ventana de confirmación de borrado y curso que se va a borrar
+    const modalBorrar = new bootstrap.Modal(document.getElementById('modal-borrar'));
+    let idCursoABorrar = null;
 
     // Obtener campos del formulario
     const camposFormulario = {
@@ -83,13 +86,28 @@ if (formularioCurso && accesoPermitido) {
     }
 
 
+    // Dice si ya hay otro curso con ese nombre (sin fijarse en mayúsculas ni tildes).
+    // Al editar, el propio curso no cuenta. Si no se pueden leer los cursos, no se comprueba.
+    function nombreRepetido(nombre, original) {
+        const cursos = leerCursos();
+        if (!cursos) return false;
+
+        const buscado = normalizarTexto(nombre.trim());
+        return cursos.some(function (curso) {
+            return (original === null || Number(curso.id_curso) !== Number(original.id_curso))
+                && normalizarTexto(curso.nombre.trim()) === buscado;
+        });
+    }
+
+
     // Validar los campos de un curso. Al editar, se deja la fecha de inicio que ya tenía.
     function validarCurso(valores, campos, original = null) {
         const horario = valores.horario;
         const imagen = valores.imagen.trim();
+        const repetido = nombreRepetido(valores.nombre, original);
 
         const valido = {
-            nombre: /\p{L}/u.test(valores.nombre) && valores.nombre.trim().length <= LIMITES.nombre,
+            nombre: /\p{L}/u.test(valores.nombre) && valores.nombre.trim().length <= LIMITES.nombre && !repetido,
             descripcion: valores.descripcion.trim() !== '' && valores.descripcion.trim().length <= LIMITES.descripcion,
             docente: DOCENTES.some(d => d.id_docente === Number(valores.docente)),
             aula: AULAS.some(a => a.id_aula === Number(valores.aula)),
@@ -115,6 +133,10 @@ if (formularioCurso && accesoPermitido) {
 
         // El aviso del horario dice qué falta en concreto
         campos.horario.nextElementSibling.textContent = mensajeHorario(horario);
+
+        if (repetido) {
+            mostrarAlerta('Ya existe un curso con el nombre "' + valores.nombre.trim() + '".');
+        }
 
         return Object.values(valido).every(Boolean);
     }
@@ -367,14 +389,54 @@ if (formularioCurso && accesoPermitido) {
         agregarDato('Horario', curso.horario);
         agregarDato('Plazas', curso.plazas);
         agregarDato('Imagen', curso.imagen || 'Sin imagen');
-        agregarDato('Estado', curso.estado);
 
         contenido.appendChild(crearBoton('Editar', 'btn btn-primary', function () {
             tarjeta.replaceWith(crearTarjetaEdicion(curso));
         }));
 
+        const botonBorrar = crearBoton('', 'btn btn-outline-danger ms-2', function () {
+            pedirConfirmacionBorrar(curso);
+        });
+        const icono = document.createElement('i');
+        icono.className = 'bi bi-trash';
+        icono.setAttribute('aria-hidden', 'true');
+        const textoBorrar = document.createElement('span');
+        textoBorrar.className = 'visually-hidden';
+        textoBorrar.textContent = 'Borrar ' + curso.nombre;
+        botonBorrar.append(icono, textoBorrar);
+        contenido.appendChild(botonBorrar);
+
         return tarjeta;
     }
+
+
+    // Borrar: la papelera abre el modal y solo se borra al confirmar
+    function pedirConfirmacionBorrar(curso) {
+        idCursoABorrar = curso.id_curso;
+        document.getElementById('nombre-curso-borrar').textContent = curso.nombre;
+        modalBorrar.show();
+    }
+
+    document.getElementById('confirmar-borrar').addEventListener('click', function () {
+        modalBorrar.hide();
+
+        const cursos = leerCursos();
+        if (!cursos) return;
+
+        const curso = cursos.find(function (c) { return Number(c.id_curso) === Number(idCursoABorrar); });
+        if (!curso) {
+            mostrarAlerta('No se ha encontrado el curso que quieres borrar.');
+            return;
+        }
+
+        const restantes = cursos.filter(function (c) { return c !== curso; });
+        if (guardarCursos(restantes)) {
+            mostrarAlerta('Curso "' + curso.nombre + '" borrado.', 'success');
+            mostrarCursos();
+        } else {
+            mostrarAlerta('No se ha podido borrar el curso. Inténtalo de nuevo.');
+        }
+    });
 
 
     // Confirmar la edición de un curso

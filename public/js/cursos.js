@@ -99,11 +99,6 @@ try {
 }
 
 // Buscador: pinta solo los cursos cuyo nombre o descripción contienen lo escrito
-// Pasa a minúsculas y quita las tildes, para que "programacion" encuentre "programación"
-function normalizarTexto(texto) {
-    return String(texto ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-}
-
 function filtrarCursos() {
     const texto = normalizarTexto(cajaBusqueda.value.trim());
     if (texto === '') {

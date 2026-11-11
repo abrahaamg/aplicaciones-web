@@ -109,3 +109,9 @@ function nombreAula(idAula) {
     const aula = AULAS.find(function (a) { return a.id_aula === idAula; });
     return aula ? aula.nombre : 'Sin aula';
 }
+
+// Pasa a minúsculas y quita las tildes, para comparar textos sin fijarse en ellas
+// ("programacion" y "Programación" cuentan como lo mismo)
+function normalizarTexto(texto) {
+    return String(texto ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}

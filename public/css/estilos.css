@@ -77,6 +77,7 @@ a {
 
 /* Avatar del perfil, a la derecha del menú */
 .navbar-centro .enlace-avatar {
+    color: var(--color-principal);
     font-size: 1.75rem;
     line-height: 1;
 }
@@ -197,6 +198,18 @@ a {
 .avisos-flotantes .alert {
     margin-bottom: 0.5rem;
     pointer-events: auto;
+}
+
+/* ===== Panel del modo desarrollo (js/dev.js) ===== */
+
+.panel-dev {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 1080;
+    width: 13rem;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
 }
 
 /* ===== Botones principales (Bootstrap trae el azul fijo) ===== */

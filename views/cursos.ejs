@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cursos | Centro de Formación</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <a class="visually-hidden-focusable" href="#contenido">
+        Saltar al contenido
+    </a>
+
+    <%- include('partials/navbar') %>
+
+    <main id="contenido" class="container my-4 flex-grow-1">
+        <nav aria-label="Ruta de navegación">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/">Inicio</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Cursos
+                </li>
+            </ol>
+        </nav>
+
+        <h1>Cursos</h1>
+        <p>Oferta formativa del centro.</p>
+
+        <div class="row g-4">
+            <% cursos.forEach(function (curso) { %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <article class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title h5">
+                                <%= curso.nombre %>
+                            </h2>
+
+                            <p class="card-text">
+                                <%= curso.descripcion %>
+                            </p>
+
+                            <ul class="list-unstyled small">
+                                <li>Plazas: <%= curso.plazas %></li>
+                                <li>Del <%= curso.fecha_inicio %> al <%= curso.fecha_fin %></li>
+                            </ul>
+
+                            <a
+                                class="btn btn-primary"
+                                href="/curso/<%= curso.id_curso %>">
+                                Ver detalle
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

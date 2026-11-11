@@ -86,9 +86,8 @@ a {
     text-decoration: none;
 }
 
-/* Botón "Registrarse" del menú. Con variables, así cambia con el tema y el alto contraste */
-.navbar-centro .btn-registro {
-    margin-left: 0.75rem;
+/* Botones destacados del menu */
+.navbar-centro .btn-especial {
     padding: 0.5rem 1.25rem;
     border: 2px solid var(--color-principal);
     border-radius: 25px;
@@ -98,14 +97,23 @@ a {
     text-align: center;
 }
 
-.navbar-centro .nav-link.active.btn-registro {
+.navbar-centro .btn-registro {
+    margin-left: 0.75rem;
+}
+
+.navbar-centro .nav-link.active.btn-especial {
     color: var(--color-fondo);
     text-decoration: none;
 }
 
-.navbar-centro .btn-registro:hover,
-.navbar-centro .btn-registro:focus {
+.navbar-centro .btn-especial:hover,
+.navbar-centro .btn-especial:focus {
     background-color: var(--color-fondo);
+    color: var(--color-principal);
+}
+
+.navbar-centro .nav-link.active.btn-especial:hover,
+.navbar-centro .nav-link.active.btn-especial:focus {
     color: var(--color-principal);
 }
 

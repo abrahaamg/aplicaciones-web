@@ -98,6 +98,11 @@ a {
     text-align: center;
 }
 
+.navbar-centro .nav-link.active.btn-registro {
+    color: var(--color-fondo);
+    text-decoration: none;
+}
+
 .navbar-centro .btn-registro:hover,
 .navbar-centro .btn-registro:focus {
     background-color: var(--color-fondo);

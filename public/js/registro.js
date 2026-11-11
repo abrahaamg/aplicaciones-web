@@ -90,15 +90,18 @@ if(formRegistro) {
             passwordValida &&
             confirmPasswordValida
         ) {
-            // Mostrar confirmación sin abandonar la página
-            mensajeConfirmacion.classList.remove('d-none');
+            const sesionIniciada = iniciarSesion({
+                correo: email.value.trim().toLowerCase(),
+                nombre: nombre.value.trim() + ' ' + apellidos.value.trim(),
+                rol: 'alumno'
+            });
 
-            // Limpiar el formulario
-            formRegistro.reset();
-
-            // Quitar posibles estados de validación
-            const campos = formRegistro.querySelectorAll('.form-control');
-            campos.forEach(campo => campo.classList.remove('is-invalid'));
+            if (sesionIniciada) {
+                location.href = 'index.html';
+            } else {
+                mensajeConfirmacion.classList.add('d-none');
+                mostrarAlerta('No se pudo iniciar la sesión. Inténtalo de nuevo.');
+            }
         } else {
             mensajeConfirmacion.classList.add('d-none');
         }

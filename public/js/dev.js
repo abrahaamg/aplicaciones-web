@@ -35,9 +35,12 @@ function crearPanelDev() {
         boton.type = 'button';
         boton.className = 'btn btn-sm btn-outline-secondary';
         boton.textContent = texto;
+        // Recarga sin ?dev=1 en la dirección: si no, "Apagar modo dev" lo volvería a encender
         boton.addEventListener('click', function () {
             accion();
-            location.reload();
+            const direccion = new URL(location.href);
+            direccion.searchParams.delete('dev');
+            location.replace(direccion);
         });
         cuerpo.appendChild(boton);
     });

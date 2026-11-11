@@ -1,7 +1,8 @@
 // Mete la cabecera y el pie comunes en cada página.
 // Necesita servidor (npm start): abriendo el HTML con doble clic, fetch no puede leer los ficheros.
 
-// Trae un trozo de HTML de components/ y lo pone dentro del contenedor indicado
+// Trae un trozo de HTML de components/ y lo pone dentro del contenedor indicado.
+// Devuelve true si se cargó y false si no (en ese caso deja un aviso en su sitio).
 async function cargarComponente(idContenedor, ruta) {
     const contenedor = document.getElementById(idContenedor);
     try {
@@ -10,6 +11,7 @@ async function cargarComponente(idContenedor, ruta) {
             throw new Error('Respuesta ' + respuesta.status);
         }
         contenedor.innerHTML = await respuesta.text();
+        return true;
     } catch (error) {
         console.error('No se pudo cargar ' + ruta, error);
         const aviso = document.createElement('div');
@@ -17,6 +19,7 @@ async function cargarComponente(idContenedor, ruta) {
         aviso.setAttribute('role', 'alert');
         aviso.textContent = 'No se ha podido cargar esta parte de la página. Recarga para intentarlo de nuevo.';
         contenedor.replaceChildren(aviso);
+        return false;
     }
 }
 
@@ -52,10 +55,13 @@ function mostrarEnlacesDeSesion() {
         });
     });
 
-    document.getElementById('boton-cerrar-sesion').addEventListener('click', function () {
-        cerrarSesion();
-        location.href = 'index.html';
-    });
+    const botonCerrarSesion = document.getElementById('boton-cerrar-sesion');
+    if (botonCerrarSesion) {
+        botonCerrarSesion.addEventListener('click', function () {
+            cerrarSesion();
+            location.href = 'index.html';
+        });
+    }
 }
 
 // Modo desarrollo: se enciende con ?dev=1 en la dirección y se apaga con ?dev=0.
@@ -75,7 +81,8 @@ function cargarModoDev() {
     document.body.append(script);
 }
 
-cargarComponente('navbar', 'components/navbar.html').then(function () {
+cargarComponente('navbar', 'components/navbar.html').then(function (cargado) {
+    if (!cargado) return;
     marcarPaginaActual();
     mostrarEnlacesDeSesion();
 });

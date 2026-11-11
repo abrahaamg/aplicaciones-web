@@ -10,7 +10,13 @@ const MENSAJES = {
     imagen: 'Pon la ruta de una imagen (.jpg, .png, .webp o .svg), por ejemplo img/curso.jpg.'
 };
 
-if (formularioCurso) {
+// Administración es solo para el administrador: sin sesión de admin se va al login
+const accesoPermitido = esAdmin();
+if (!accesoPermitido) {
+    location.replace('login.html');
+}
+
+if (formularioCurso && accesoPermitido) {
 
     // Fecha de hoy en el mismo formato que los campos de fecha: '2026-11-10'
     function fechaDeHoy() {

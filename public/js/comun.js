@@ -14,6 +14,12 @@ function leerSesion() {
     }
 }
 
+// true si quien tiene la sesión iniciada es administrador
+function esAdmin() {
+    const sesion = leerSesion();
+    return sesion !== null && sesion.rol === 'admin';
+}
+
 // Guarda al usuario como sesión iniciada (sin la contraseña). Devuelve false si no se pudo.
 function iniciarSesion(usuario) {
     try {

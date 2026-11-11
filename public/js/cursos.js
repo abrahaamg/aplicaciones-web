@@ -55,6 +55,18 @@ function crearTarjeta(curso) {
     enlace.append(crearElemento('span', 'visually-hidden', ' de ' + curso.nombre));
     cuerpo.append(enlace);
 
+    // Solo el administrador puede borrar cursos
+    if (esAdmin()) {
+        cuerpo.append(crearBotonBorrar(curso));
+    }
+
+    tarjeta.append(cuerpo);
+    columna.append(tarjeta);
+    return columna;
+}
+
+// Papelera que abre la confirmación de borrado de un curso
+function crearBotonBorrar(curso) {
     const botonBorrar = crearElemento('button', 'btn btn-outline-danger ms-2', '');
     botonBorrar.type = 'button';
     const icono = crearElemento('i', 'bi bi-trash', '');
@@ -63,11 +75,7 @@ function crearTarjeta(curso) {
     botonBorrar.addEventListener('click', function () {
         pedirConfirmacionBorrar(curso);
     });
-    cuerpo.append(botonBorrar);
-
-    tarjeta.append(cuerpo);
-    columna.append(tarjeta);
-    return columna;
+    return botonBorrar;
 }
 
 // Vacía el contenedor y pinta la lista que se le pase
@@ -113,9 +121,19 @@ function pedirConfirmacionBorrar(curso) {
 }
 
 document.getElementById('confirmar-borrar').addEventListener('click', function () {
-    const curso = cursos.find(function (c) { return c.id_curso === idCursoABorrar; });
-    const restantes = cursos.filter(function (c) { return c.id_curso !== idCursoABorrar; });
     modalBorrar.hide();
+
+    if (!esAdmin()) {
+        mostrarAlerta('Solo el administrador puede borrar cursos.');
+        return;
+    }
+
+    const curso = cursos.find(function (c) { return Number(c.id_curso) === Number(idCursoABorrar); });
+    if (!curso) {
+        mostrarAlerta('No se ha encontrado el curso que quieres borrar.');
+        return;
+    }
+    const restantes = cursos.filter(function (c) { return c !== curso; });
 
     if (!guardarCursos(restantes)) {
         mostrarAlerta('No se ha podido borrar el curso. Inténtalo de nuevo.');

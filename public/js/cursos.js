@@ -34,6 +34,7 @@ function crearTarjeta(curso) {
     cuerpo.className = 'card-body';
     cuerpo.append(crearElemento('h2', 'card-title h5', curso.nombre));
     if (curso.estado !== 'activo') {
+        tarjeta.classList.add('tarjeta-inactiva');
         cuerpo.append(crearElemento('span', 'badge bg-secondary mb-2', 'Inactivo'));
     }
     cuerpo.append(crearElemento('p', 'card-text', curso.descripcion));
@@ -98,15 +99,20 @@ try {
 }
 
 // Buscador: pinta solo los cursos cuyo nombre o descripción contienen lo escrito
+// Pasa a minúsculas y quita las tildes, para que "programacion" encuentre "programación"
+function normalizarTexto(texto) {
+    return String(texto ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+}
+
 function filtrarCursos() {
-    const texto = cajaBusqueda.value.trim().toLowerCase();
+    const texto = normalizarTexto(cajaBusqueda.value.trim());
     if (texto === '') {
         pintarCursos(cursos);
         return;
     }
     const encontrados = cursos.filter(function (curso) {
-        return curso.nombre.toLowerCase().includes(texto)
-            || curso.descripcion.toLowerCase().includes(texto);
+        return normalizarTexto(curso.nombre).includes(texto)
+            || normalizarTexto(curso.descripcion).includes(texto);
     });
     pintarCursos(encontrados, 'No hay cursos que coincidan con la búsqueda.');
 }

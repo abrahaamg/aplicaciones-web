@@ -8,6 +8,21 @@ const USUARIOS_PRUEBA = [
 
 const formularioLogin = document.getElementById('formulario-login');
 
+// Página a la que volver después de entrar (?volver=admin.html). Solo se acepta el nombre
+// de una página de la web, para no mandar a nadie a otro sitio.
+function paginaDeVuelta() {
+    const volver = new URLSearchParams(location.search).get('volver');
+    if (volver && /^[\w-]+\.html$/.test(volver) && volver !== 'login.html') {
+        return volver;
+    }
+    return 'index.html';
+}
+
+// Con la sesión ya iniciada no tiene sentido el login
+if (leerSesion() !== null) {
+    location.replace(paginaDeVuelta());
+}
+
 formularioLogin.addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -28,7 +43,7 @@ formularioLogin.addEventListener('submit', function (event) {
     }
 
     if (iniciarSesion(usuario)) {
-        location.href = 'index.html';
+        location.href = paginaDeVuelta();
     } else {
         mostrarAlerta('No se pudo iniciar la sesión. Inténtalo de nuevo.');
     }

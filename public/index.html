@@ -29,7 +29,6 @@
                         <div class="pasos-matricula">
                             <h2 class="h4">Cómo matricularte</h2>
                             <ol class="mb-0">
-                                <li><strong>Regístrate</strong> con tu correo y tus datos personales.</li>
                                 <li><strong>Elige un curso</strong> de la oferta y revisa fechas, horario y plazas libres.</li>
                                 <li><strong>Confirma la matrícula</strong> y síguela desde tu perfil.</li>
                             </ol>
@@ -68,7 +67,6 @@
                     <ul class="lista-novedades">
                         <li>Abierto el plazo de matrícula para los cursos del segundo trimestre.</li>
                         <li>Nuevo laboratorio de informática con 20 puestos para las clases prácticas.</li>
-                        <li>Ya puedes ajustar el tamaño de letra y el contraste desde la página de accesibilidad.</li>
                         <li>Nuevo curso de bases de datos para quienes ya conocen los fundamentos.</li>
                     </ul>
                 </div>
@@ -80,21 +78,22 @@
             <div class="container">
                 <h2 id="titulo-cifras" class="titulo-seccion">El centro en cifras</h2>
                 <div class="row g-4 text-center">
+                    <!-- Las cifras las calcula js/portada.js a partir de los datos -->
                     <div class="col-6 col-md-3">
-                        <p class="cifra mb-0">30</p>
-                        <p>cursos en la oferta formativa</p>
+                        <p class="cifra mb-0" id="cifra-cursos">-</p>
+                        <p>cursos abiertos en la oferta formativa</p>
                     </div>
                     <div class="col-6 col-md-3">
-                        <p class="cifra mb-0">18</p>
+                        <p class="cifra mb-0" id="cifra-docentes">-</p>
                         <p>docentes con experiencia en el sector</p>
                     </div>
                     <div class="col-6 col-md-3">
-                        <p class="cifra mb-0">12</p>
+                        <p class="cifra mb-0" id="cifra-aulas">-</p>
                         <p>aulas y laboratorios equipados</p>
                     </div>
                     <div class="col-6 col-md-3">
-                        <p class="cifra mb-0">900</p>
-                        <p>alumnos matriculados este curso</p>
+                        <p class="cifra mb-0" id="cifra-plazas">-</p>
+                        <p>plazas en los cursos abiertos</p>
                     </div>
                 </div>
             </div>
@@ -141,5 +140,7 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/comun.js"></script>
     <script src="js/components.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/portada.js"></script>
 </body>
 </html>

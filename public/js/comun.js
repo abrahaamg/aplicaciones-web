@@ -33,11 +33,21 @@ function aplicarPreferencias() {
 
 aplicarPreferencias();
 
-// Enseña un aviso de Bootstrap arriba del contenido de la página.
+// Enseña un aviso de Bootstrap flotando sobre la página, arriba y centrado,
+// para verlo aunque se haya bajado con el scroll. No oscurece el resto.
 // tipo: 'danger' (por defecto), 'success', 'warning' o 'info'.
+// Los de éxito se quitan solos a los 5 segundos; los demás esperan a que se cierren.
 function mostrarAlerta(mensaje, tipo = 'danger') {
+    let contenedor = document.getElementById('avisos');
+    if (!contenedor) {
+        contenedor = document.createElement('div');
+        contenedor.id = 'avisos';
+        contenedor.className = 'avisos-flotantes';
+        document.body.append(contenedor);
+    }
+
     const alerta = document.createElement('div');
-    alerta.className = 'alert alert-' + tipo + ' alert-dismissible';
+    alerta.className = 'alert alert-' + tipo + ' alert-dismissible shadow';
     alerta.setAttribute('role', 'alert');
     alerta.textContent = mensaje;
 
@@ -48,5 +58,11 @@ function mostrarAlerta(mensaje, tipo = 'danger') {
     cerrar.setAttribute('aria-label', 'Cerrar');
     alerta.append(cerrar);
 
-    document.getElementById('contenido').prepend(alerta);
+    contenedor.append(alerta);
+
+    if (tipo === 'success') {
+        setTimeout(function () {
+            alerta.remove();
+        }, 5000);
+    }
 }

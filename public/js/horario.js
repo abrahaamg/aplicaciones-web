@@ -21,9 +21,21 @@ function textoHorario(horario) {
     return lista + ', ' + horario.inicio + ' a ' + horario.fin;
 }
 
-// El horario es válido con al menos un día y la hora de fin después de la de inicio
-function horarioValido(horario) {
-    return horario.dias.length > 0 && horario.inicio !== '' && horario.fin > horario.inicio;
+// Dice qué falta en el horario, o devuelve '' si está bien
+function mensajeHorario(horario) {
+    if (horario.dias.length === 0) return 'Marca al menos un día de la semana.';
+    if (horario.inicio === '' || horario.fin === '') return 'Elige la hora de inicio y la de fin.';
+    if (horario.fin <= horario.inicio) return 'La hora de fin tiene que ser posterior a la de inicio.';
+    return '';
+}
+
+// Asterisco rojo de campo obligatorio (el lector de pantalla ya lo sabe por "required")
+function crearAsterisco() {
+    const asterisco = document.createElement('span');
+    asterisco.className = 'text-danger';
+    asterisco.setAttribute('aria-hidden', 'true');
+    asterisco.textContent = '*';
+    return asterisco;
 }
 
 // Una casilla para un día, marcada si ya estaba en el horario
@@ -78,7 +90,8 @@ function crearCampoHorario(prefijo, horario) {
 
     const leyenda = document.createElement('legend');
     leyenda.className = 'form-label fs-6 mb-1';
-    leyenda.textContent = 'Horario';
+    leyenda.textContent = 'Horario ';
+    leyenda.appendChild(crearAsterisco());
 
     const campo = document.createElement('div');
     DIAS.forEach(function (dia) {
@@ -95,7 +108,7 @@ function crearCampoHorario(prefijo, horario) {
 
     const error = document.createElement('div');
     error.className = 'invalid-feedback';
-    error.textContent = 'Marca al menos un día y una hora de fin posterior a la de inicio.';
+    error.textContent = mensajeHorario(actual);
 
     grupo.append(leyenda, campo, error);
 

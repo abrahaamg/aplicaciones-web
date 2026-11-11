@@ -25,6 +25,10 @@ function crearTarjeta(curso) {
         imagen.className = 'card-img-top';
         imagen.src = curso.imagen;
         imagen.alt = '';
+        // Si el fichero no existe, se quita la imagen en vez de enseñarla rota
+        imagen.addEventListener('error', function () {
+            imagen.remove();
+        });
         tarjeta.append(imagen);
     }
 

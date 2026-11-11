@@ -34,6 +34,7 @@ function crearTarjeta(curso) {
     cuerpo.className = 'card-body';
     cuerpo.append(crearElemento('h2', 'card-title h5', curso.nombre));
     if (curso.estado !== 'activo') {
+        tarjeta.classList.add('tarjeta-inactiva');
         cuerpo.append(crearElemento('span', 'badge bg-secondary mb-2', 'Inactivo'));
     }
     cuerpo.append(crearElemento('p', 'card-text', curso.descripcion));

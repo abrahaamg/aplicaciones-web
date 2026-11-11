@@ -337,6 +337,15 @@ if (formularioCurso && accesoPermitido) {
         titulo.textContent = curso.nombre;
         contenido.appendChild(titulo);
 
+        // Inactivo: tarjeta más apagada y la misma etiqueta que en el catálogo
+        if (curso.estado !== 'activo') {
+            contenido.parentElement.classList.add('tarjeta-inactiva');
+            const insignia = document.createElement('span');
+            insignia.className = 'badge bg-secondary mb-2';
+            insignia.textContent = 'Inactivo';
+            contenido.appendChild(insignia);
+        }
+
         function agregarDato(etiqueta, valor) {
             const parrafo = document.createElement('p');
             parrafo.className = 'card-text';

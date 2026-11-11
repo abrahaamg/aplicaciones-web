@@ -10,7 +10,6 @@ El profe elige a uno de los dos al azar, así que los dos tenemos que saber cont
 2. Pasar por el menú: todas las páginas abren y la actual sale resaltada.
 3. Cursos → "Ver detalle de Introducción a la programación": enseñar las migas de pan.
 4. F12 → modo móvil: el menú se pliega en el botón de tres rayas.
-5. Recargar y pulsar Tab: sale "Saltar al contenido".
 
 ## Estructura y navegación
 
@@ -80,8 +79,3 @@ Es la página en la que ya estás. Lleva `aria-current="page"` para que el lecto
 
 **¿Qué pasa al estrechar la ventana?**
 Por debajo de 992 px el menú se pliega en el botón de tres rayas (`navbar-expand-lg`). Las tarjetas de cursos pasan de 3 por fila a 2 y luego a 1 (`col-12 col-md-6 col-lg-4`). Probado a 375 px, el ancho de un móvil, sin que nada se salga por los lados.
-
-## Accesibilidad
-
-**¿Qué es el "Saltar al contenido"?**
-Un enlace que no se ve hasta que pulsas Tab nada más entrar. Con Enter te lleva directo al contenido y te saltas el menú. Es para quien navega solo con teclado.

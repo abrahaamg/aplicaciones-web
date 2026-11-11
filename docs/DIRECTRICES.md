@@ -101,7 +101,6 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 - Se guarda en `localStorage` con la clave `preferencias`, por ejemplo `{ "tema": "oscuro", "fuente": "grande", "contraste": true }`. `comun.js` lo aplica al cargar cada página poniendo clases en `<html>` (`tema-oscuro`, `alto-contraste`, `fuente-grande`).
 - Todo usable con teclado y con el foco visible.
 - `alt` en todas las imágenes (vacío si es decorativa).
-- Enlace "Saltar al contenido" al principio de cada página.
 
 ## 7. API REST (bloque backend)
 

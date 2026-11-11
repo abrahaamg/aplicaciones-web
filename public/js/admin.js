@@ -478,6 +478,14 @@ if (formularioCurso && accesoPermitido) {
 
         listaCursos.innerHTML = '';
 
+        if (cursos.length === 0) {
+            const aviso = document.createElement('p');
+            aviso.className = 'alert alert-info';
+            aviso.textContent = 'Todavía no hay cursos. Añade el primero con el botón de arriba.';
+            listaCursos.appendChild(aviso);
+            return;
+        }
+
         cursos.forEach(function (curso) {
             listaCursos.appendChild(crearTarjetaCurso(curso));
         });

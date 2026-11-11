@@ -200,6 +200,11 @@ a {
     pointer-events: auto;
 }
 
+/* Cursos inactivos en los listados de docentes y aulas */
+.curso-inactivo {
+    opacity: 0.55;
+}
+
 /* ===== Panel del modo desarrollo (js/dev.js) ===== */
 
 .panel-dev {

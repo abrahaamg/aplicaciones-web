@@ -24,8 +24,14 @@ function crearTarjetaListado(titulo, cursos) {
     } else {
         cuerpo.appendChild(crearElementoListado('p', 'card-text mb-1', 'Cursos:'));
         const lista = crearElementoListado('ul', 'mb-0', '');
+        // Los inactivos salen más apagados y con la palabra "inactivo"
         cursos.forEach(function (curso) {
-            lista.appendChild(crearElementoListado('li', '', curso.nombre));
+            const inactivo = curso.estado !== 'activo';
+            lista.appendChild(crearElementoListado(
+                'li',
+                inactivo ? 'curso-inactivo' : '',
+                curso.nombre + (inactivo ? ' (inactivo)' : '')
+            ));
         });
         cuerpo.appendChild(lista);
     }

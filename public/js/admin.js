@@ -18,7 +18,12 @@ const MENSAJES = {
 // Administración es solo para el administrador: sin sesión de admin se va al login
 const accesoPermitido = esAdmin();
 if (!accesoPermitido) {
-    location.replace('login.html');
+    // Sin sesión, al login. Con sesión de alumno, a la portada (volver al login sería un bucle)
+    if (leerSesion() === null) {
+        irAlLogin();
+    } else {
+        location.replace('index.html');
+    }
 }
 
 if (formularioCurso && accesoPermitido) {

@@ -37,14 +37,42 @@ function marcarPaginaActual() {
     });
 }
 
-// Enseña los enlaces del menú que solo tienen sentido con la sesión iniciada
+// Enseña u oculta las partes del menú según haya sesión y según el rol
 function mostrarEnlacesDeSesion() {
-    if (!haySesion()) {
+    const sesion = leerSesion();
+    const visibles = {
+        '[data-sin-sesion]': sesion === null,
+        '[data-requiere-sesion]': sesion !== null,
+        '[data-requiere-admin]': sesion !== null && sesion.rol === 'admin'
+    };
+
+    Object.entries(visibles).forEach(function ([selector, visible]) {
+        document.querySelectorAll('#navbar ' + selector).forEach(function (elemento) {
+            elemento.classList.toggle('d-none', !visible);
+        });
+    });
+
+    document.getElementById('boton-cerrar-sesion').addEventListener('click', function () {
+        cerrarSesion();
+        location.href = 'index.html';
+    });
+}
+
+// Modo desarrollo: se enciende con ?dev=1 en la dirección y se apaga con ?dev=0.
+// Mientras está encendido, cada página carga js/dev.js con atajos para probar.
+function cargarModoDev() {
+    const parametro = new URLSearchParams(location.search).get('dev');
+    try {
+        if (parametro === '1') localStorage.setItem('dev', '1');
+        if (parametro === '0') localStorage.removeItem('dev');
+        if (localStorage.getItem('dev') !== '1') return;
+    } catch {
         return;
     }
-    document.querySelectorAll('#navbar [data-requiere-sesion]').forEach(function (elemento) {
-        elemento.classList.remove('d-none');
-    });
+
+    const script = document.createElement('script');
+    script.src = 'js/dev.js';
+    document.body.append(script);
 }
 
 cargarComponente('navbar', 'components/navbar.html').then(function () {
@@ -52,3 +80,4 @@ cargarComponente('navbar', 'components/navbar.html').then(function () {
     mostrarEnlacesDeSesion();
 });
 cargarComponente('footer', 'components/footer.html');
+cargarModoDev();

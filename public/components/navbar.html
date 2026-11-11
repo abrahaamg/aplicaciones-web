@@ -24,11 +24,21 @@
                     <li class="nav-item d-none" data-requiere-sesion><a class="nav-link" href="admin.html">Administración</a></li>
                 </ul>
                 <ul class="navbar-nav ms-xl-3">
-                    <li class="nav-item d-none" data-requiere-sesion>
-                        <a class="nav-link enlace-avatar" href="perfil.html">
+                    <li class="nav-item" data-sin-sesion>
+                        <a class="nav-link" href="login.html">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item dropdown d-none" data-requiere-sesion>
+                        <a class="nav-link enlace-avatar" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle" aria-hidden="true"></i>
-                            <span class="visually-hidden">Mi perfil</span>
+                            <span class="visually-hidden">Mi cuenta</span>
                         </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="perfil.html">Mi perfil</a></li>
+                            <li>
+                                <button type="button" class="dropdown-item" id="boton-cerrar-sesion">Cerrar sesión</button>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>

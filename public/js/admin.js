@@ -83,7 +83,7 @@ if (formularioCurso) {
             fechaFin: valores.fechaFin !== '' &&
                 valores.fechaInicio !== '' &&
                 valores.fechaFin > valores.fechaInicio,
-            horario: horarioValido(horario),
+            horario: mensajeHorario(horario) === '',
             plazas: valores.plazas !== '' &&
                 Number.isInteger(Number(valores.plazas)) &&
                 Number(valores.plazas) > 0,
@@ -94,6 +94,9 @@ if (formularioCurso) {
         Object.keys(valido).forEach(function (clave) {
             campos[clave].classList.toggle('is-invalid', !valido[clave]);
         });
+
+        // El aviso del horario dice qué falta en concreto
+        campos.horario.nextElementSibling.textContent = mensajeHorario(horario);
 
         return Object.values(valido).every(Boolean);
     }
@@ -231,6 +234,11 @@ if (formularioCurso) {
     function crearTarjetaEdicion(curso) {
         const { tarjeta, contenido } = crearMarcoTarjeta();
 
+        const leyenda = document.createElement('p');
+        leyenda.className = 'small text-muted';
+        leyenda.append('Los campos con ', crearAsterisco(), ' son obligatorios.');
+        contenido.appendChild(leyenda);
+
         // Configuración de los campos editables (el horario va aparte)
         const configuracion = {
             nombre: ['Nombre', 'text', curso.nombre, [], MENSAJES.nombre],
@@ -263,6 +271,12 @@ if (formularioCurso) {
                 ? crearCampoHorario(id, curso.horario)
                 : crearCampo(id, ...datos);
             campos[clave] = campo;
+
+            // Todo es obligatorio menos la imagen
+            if (datos !== null && clave !== 'imagen') {
+                campo.required = true;
+                contenedor.querySelector('label').append(' ', crearAsterisco());
+            }
             contenido.appendChild(contenedor);
         });
 

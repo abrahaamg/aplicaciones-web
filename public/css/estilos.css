@@ -182,6 +182,23 @@ a {
     opacity: 0.4;
 }
 
+/* ===== Avisos flotantes (mostrarAlerta en js/comun.js) ===== */
+
+.avisos-flotantes {
+    position: fixed;
+    top: 1.75rem;
+    left: 50%;
+    z-index: 1090;
+    width: min(90vw, 32rem);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.avisos-flotantes .alert {
+    margin-bottom: 0.5rem;
+    pointer-events: auto;
+}
+
 /* ===== Botones principales (Bootstrap trae el azul fijo) ===== */
 
 .btn-primary {

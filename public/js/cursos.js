@@ -2,9 +2,7 @@
 
 const contenedorCursos = document.getElementById('lista-cursos');
 const cajaBusqueda = document.getElementById('buscar-curso');
-const modalBorrar = new bootstrap.Modal(document.getElementById('modal-borrar'));
 let cursos = [];
-let idCursoABorrar = null;
 
 // Crea un elemento con su clase y su texto
 function crearElemento(etiqueta, clase, texto) {
@@ -56,27 +54,9 @@ function crearTarjeta(curso) {
     enlace.append(crearElemento('span', 'visually-hidden', ' de ' + curso.nombre));
     cuerpo.append(enlace);
 
-    // Solo el administrador puede borrar cursos
-    if (esAdmin()) {
-        cuerpo.append(crearBotonBorrar(curso));
-    }
-
     tarjeta.append(cuerpo);
     columna.append(tarjeta);
     return columna;
-}
-
-// Papelera que abre la confirmación de borrado de un curso
-function crearBotonBorrar(curso) {
-    const botonBorrar = crearElemento('button', 'btn btn-outline-danger ms-2', '');
-    botonBorrar.type = 'button';
-    const icono = crearElemento('i', 'bi bi-trash', '');
-    icono.setAttribute('aria-hidden', 'true');
-    botonBorrar.append(icono, crearElemento('span', 'visually-hidden', 'Borrar ' + curso.nombre));
-    botonBorrar.addEventListener('click', function () {
-        pedirConfirmacionBorrar(curso);
-    });
-    return botonBorrar;
 }
 
 // Vacía el contenedor y pinta la lista que se le pase
@@ -113,34 +93,3 @@ function filtrarCursos() {
 }
 
 cajaBusqueda.addEventListener('input', filtrarCursos);
-
-// Borrar: la papelera abre el modal y solo se borra al confirmar
-function pedirConfirmacionBorrar(curso) {
-    idCursoABorrar = curso.id_curso;
-    document.getElementById('nombre-curso-borrar').textContent = curso.nombre;
-    modalBorrar.show();
-}
-
-document.getElementById('confirmar-borrar').addEventListener('click', function () {
-    modalBorrar.hide();
-
-    if (!esAdmin()) {
-        mostrarAlerta('Solo el administrador puede borrar cursos.');
-        return;
-    }
-
-    const curso = cursos.find(function (c) { return Number(c.id_curso) === Number(idCursoABorrar); });
-    if (!curso) {
-        mostrarAlerta('No se ha encontrado el curso que quieres borrar.');
-        return;
-    }
-    const restantes = cursos.filter(function (c) { return c !== curso; });
-
-    if (!guardarCursos(restantes)) {
-        mostrarAlerta('No se ha podido borrar el curso. Inténtalo de nuevo.');
-        return;
-    }
-    cursos = restantes;
-    filtrarCursos();
-    mostrarAlerta('Curso "' + curso.nombre + '" borrado.', 'success');
-});

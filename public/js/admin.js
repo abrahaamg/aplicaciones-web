@@ -1,16 +1,31 @@
-
 // Obtener elementos principales
 const formularioCurso = document.getElementById('formulario-curso');
 const listaCursos = document.getElementById('lista-cursos');
 
 // Mensajes de error comunes a los dos formularios
+// Límites de los campos (también van como maxlength y max en el HTML)
+const LIMITES = { nombre: 100, descripcion: 500, plazas: 200 };
+
 const MENSAJES = {
-    nombre: 'Introduce un nombre con letras, no solo números.',
+    nombre: 'Introduce un nombre con letras, no solo números (máximo 100 caracteres).',
+    descripcion: 'Introduce una descripción (máximo 500 caracteres).',
+    plazas: 'Introduce un número entero de plazas entre 1 y 200.',
     fechaInicio: 'La fecha de inicio no puede ser anterior a hoy.',
-    imagen: 'Pon la ruta de una imagen (.jpg, .png, .webp o .svg), por ejemplo img/curso.jpg.'
+    imagen: 'Pon la ruta de una imagen dentro de la web (.jpg, .png, .webp o .svg), por ejemplo img/curso.jpg.'
 };
 
-if (formularioCurso) {
+// Administración es solo para el administrador: sin sesión de admin se va al login
+const accesoPermitido = esAdmin();
+if (!accesoPermitido) {
+    // Sin sesión, al login. Con sesión de alumno, a la portada (volver al login sería un bucle)
+    if (leerSesion() === null) {
+        irAlLogin();
+    } else {
+        location.replace('index.html');
+    }
+}
+
+if (formularioCurso && accesoPermitido) {
 
     // Fecha de hoy en el mismo formato que los campos de fecha: '2026-11-10'
     function fechaDeHoy() {
@@ -20,6 +35,10 @@ if (formularioCurso) {
             String(hoy.getDate()).padStart(2, '0');
     }
 
+
+    // Ventana de confirmación de borrado y curso que se va a borrar
+    const modalBorrar = new bootstrap.Modal(document.getElementById('modal-borrar'));
+    let idCursoABorrar = null;
 
     // Obtener campos del formulario
     const camposFormulario = {
@@ -67,14 +86,29 @@ if (formularioCurso) {
     }
 
 
+    // Dice si ya hay otro curso con ese nombre (sin fijarse en mayúsculas ni tildes).
+    // Al editar, el propio curso no cuenta. Si no se pueden leer los cursos, no se comprueba.
+    function nombreRepetido(nombre, original) {
+        const cursos = leerCursos();
+        if (!cursos) return false;
+
+        const buscado = normalizarTexto(nombre.trim());
+        return cursos.some(function (curso) {
+            return (original === null || Number(curso.id_curso) !== Number(original.id_curso))
+                && normalizarTexto(curso.nombre.trim()) === buscado;
+        });
+    }
+
+
     // Validar los campos de un curso. Al editar, se deja la fecha de inicio que ya tenía.
     function validarCurso(valores, campos, original = null) {
         const horario = valores.horario;
         const imagen = valores.imagen.trim();
+        const repetido = nombreRepetido(valores.nombre, original);
 
         const valido = {
-            nombre: /\p{L}/u.test(valores.nombre),
-            descripcion: valores.descripcion.trim() !== '',
+            nombre: /\p{L}/u.test(valores.nombre) && valores.nombre.trim().length <= LIMITES.nombre && !repetido,
+            descripcion: valores.descripcion.trim() !== '' && valores.descripcion.trim().length <= LIMITES.descripcion,
             docente: DOCENTES.some(d => d.id_docente === Number(valores.docente)),
             aula: AULAS.some(a => a.id_aula === Number(valores.aula)),
             fechaInicio: valores.fechaInicio !== '' &&
@@ -86,8 +120,10 @@ if (formularioCurso) {
             horario: mensajeHorario(horario) === '',
             plazas: valores.plazas !== '' &&
                 Number.isInteger(Number(valores.plazas)) &&
-                Number(valores.plazas) > 0,
-            imagen: imagen === '' || /^[\w\-./]+\.(jpe?g|png|webp|svg)$/i.test(imagen),
+                Number(valores.plazas) > 0 &&
+                Number(valores.plazas) <= LIMITES.plazas,
+            // Ruta dentro de la web: carpetas y fichero, sin '..', sin '/' al principio y sin otra web
+            imagen: imagen === '' || /^[\w-]+(\/[\w-]+)*\.(jpe?g|png|webp|svg)$/i.test(imagen),
             estado: ['activo', 'inactivo'].includes(valores.estado)
         };
 
@@ -97,6 +133,10 @@ if (formularioCurso) {
 
         // El aviso del horario dice qué falta en concreto
         campos.horario.nextElementSibling.textContent = mensajeHorario(horario);
+
+        if (repetido) {
+            mostrarAlerta('Ya existe un curso con el nombre "' + valores.nombre.trim() + '".');
+        }
 
         return Object.values(valido).every(Boolean);
     }
@@ -234,15 +274,20 @@ if (formularioCurso) {
     function crearTarjetaEdicion(curso) {
         const { tarjeta, contenido } = crearMarcoTarjeta();
 
+        // Es un formulario de verdad: así Enter también envía la edición
+        const formulario = document.createElement('form');
+        formulario.noValidate = true;
+        contenido.appendChild(formulario);
+
         const leyenda = document.createElement('p');
         leyenda.className = 'small text-muted';
         leyenda.append('Los campos con ', crearAsterisco(), ' son obligatorios.');
-        contenido.appendChild(leyenda);
+        formulario.appendChild(leyenda);
 
         // Configuración de los campos editables (el horario va aparte)
         const configuracion = {
             nombre: ['Nombre', 'text', curso.nombre, [], MENSAJES.nombre],
-            descripcion: ['Descripción', 'textarea', curso.descripcion, [], 'Introduce una descripción.'],
+            descripcion: ['Descripción', 'textarea', curso.descripcion, [], MENSAJES.descripcion],
             docente: ['Docente', 'select', curso.id_docente,
                 DOCENTES.map(d => ({ value: d.id_docente, texto: d.nombre + ' ' + d.apellidos })),
                 'Selecciona un docente.'],
@@ -252,7 +297,7 @@ if (formularioCurso) {
             fechaInicio: ['Fecha de inicio', 'date', curso.fecha_inicio, [], MENSAJES.fechaInicio],
             fechaFin: ['Fecha de fin', 'date', curso.fecha_fin, [], 'La fecha de fin debe ser posterior a la de inicio.'],
             horario: null,
-            plazas: ['Plazas', 'number', curso.plazas, [], 'Introduce un número de plazas mayor que 0.'],
+            plazas: ['Plazas', 'number', curso.plazas, [], MENSAJES.plazas],
             imagen: ['Imagen (ruta)', 'text', curso.imagen || '', [], MENSAJES.imagen],
             estado: ['Estado', 'select', curso.estado,
                 [
@@ -277,17 +322,29 @@ if (formularioCurso) {
                 campo.required = true;
                 contenedor.querySelector('label').append(' ', crearAsterisco());
             }
-            contenido.appendChild(contenedor);
+
+            // Los mismos límites que en el formulario de alta
+            if (clave === 'plazas') campo.max = LIMITES.plazas;
+            else if (LIMITES[clave]) campo.maxLength = LIMITES[clave];
+            formulario.appendChild(contenedor);
         });
 
-        contenido.append(
+        const confirmar = document.createElement('button');
+        confirmar.type = 'submit';
+        confirmar.className = 'btn btn-success';
+        confirmar.textContent = 'Confirmar';
+
+        formulario.append(
             crearBoton('Cancelar', 'btn btn-secondary me-2', function () {
                 tarjeta.replaceWith(crearTarjetaCurso(curso));
             }),
-            crearBoton('Confirmar', 'btn btn-success', function () {
-                confirmarEdicion(curso, campos);
-            })
+            confirmar
         );
+
+        formulario.addEventListener('submit', function (event) {
+            event.preventDefault();
+            confirmarEdicion(curso, campos);
+        });
 
         return tarjeta;
     }
@@ -301,6 +358,15 @@ if (formularioCurso) {
         titulo.className = 'card-title h5';
         titulo.textContent = curso.nombre;
         contenido.appendChild(titulo);
+
+        // Inactivo: tarjeta más apagada y la misma etiqueta que en el catálogo
+        if (curso.estado !== 'activo') {
+            contenido.parentElement.classList.add('tarjeta-inactiva');
+            const insignia = document.createElement('span');
+            insignia.className = 'badge bg-secondary mb-2';
+            insignia.textContent = 'Inactivo';
+            contenido.appendChild(insignia);
+        }
 
         function agregarDato(etiqueta, valor) {
             const parrafo = document.createElement('p');
@@ -323,14 +389,54 @@ if (formularioCurso) {
         agregarDato('Horario', curso.horario);
         agregarDato('Plazas', curso.plazas);
         agregarDato('Imagen', curso.imagen || 'Sin imagen');
-        agregarDato('Estado', curso.estado);
 
         contenido.appendChild(crearBoton('Editar', 'btn btn-primary', function () {
             tarjeta.replaceWith(crearTarjetaEdicion(curso));
         }));
 
+        const botonBorrar = crearBoton('', 'btn btn-outline-danger ms-2', function () {
+            pedirConfirmacionBorrar(curso);
+        });
+        const icono = document.createElement('i');
+        icono.className = 'bi bi-trash';
+        icono.setAttribute('aria-hidden', 'true');
+        const textoBorrar = document.createElement('span');
+        textoBorrar.className = 'visually-hidden';
+        textoBorrar.textContent = 'Borrar ' + curso.nombre;
+        botonBorrar.append(icono, textoBorrar);
+        contenido.appendChild(botonBorrar);
+
         return tarjeta;
     }
+
+
+    // Borrar: la papelera abre el modal y solo se borra al confirmar
+    function pedirConfirmacionBorrar(curso) {
+        idCursoABorrar = curso.id_curso;
+        document.getElementById('nombre-curso-borrar').textContent = curso.nombre;
+        modalBorrar.show();
+    }
+
+    document.getElementById('confirmar-borrar').addEventListener('click', function () {
+        modalBorrar.hide();
+
+        const cursos = leerCursos();
+        if (!cursos) return;
+
+        const curso = cursos.find(function (c) { return Number(c.id_curso) === Number(idCursoABorrar); });
+        if (!curso) {
+            mostrarAlerta('No se ha encontrado el curso que quieres borrar.');
+            return;
+        }
+
+        const restantes = cursos.filter(function (c) { return c !== curso; });
+        if (guardarCursos(restantes)) {
+            mostrarAlerta('Curso "' + curso.nombre + '" borrado.', 'success');
+            mostrarCursos();
+        } else {
+            mostrarAlerta('No se ha podido borrar el curso. Inténtalo de nuevo.');
+        }
+    });
 
 
     // Confirmar la edición de un curso
@@ -371,6 +477,14 @@ if (formularioCurso) {
         if (!cursos) return;
 
         listaCursos.innerHTML = '';
+
+        if (cursos.length === 0) {
+            const aviso = document.createElement('p');
+            aviso.className = 'alert alert-info';
+            aviso.textContent = 'Todavía no hay cursos. Añade el primero con el botón de arriba.';
+            listaCursos.appendChild(aviso);
+            return;
+        }
 
         cursos.forEach(function (curso) {
             listaCursos.appendChild(crearTarjetaCurso(curso));

@@ -48,8 +48,8 @@
 
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre <span class="text-danger" aria-hidden="true">*</span></label>
-            <input type="text" class="form-control" id="nombre" required />
-            <div class="invalid-feedback">Introduce un nombre con letras, no solo números.</div>
+            <input type="text" class="form-control" id="nombre" maxlength="100" required />
+            <div class="invalid-feedback">Introduce un nombre con letras, no solo números (máximo 100 caracteres).</div>
           </div>
 
           <div class="mb-3">
@@ -57,10 +57,10 @@
             <textarea
               class="form-control"
               id="descripcion"
-              rows="3"
+              rows="3" maxlength="500"
               required
             ></textarea>
-            <div class="invalid-feedback">Introduce una descripción.</div>
+            <div class="invalid-feedback">Introduce una descripción (máximo 500 caracteres).</div>
           </div>
 
           <div class="mb-3">
@@ -109,11 +109,11 @@
               type="number"
               class="form-control"
               id="plazas"
-              min="1"
+              min="1" max="200"
               required
             />
             <div class="invalid-feedback">
-              Introduce un número de plazas mayor que 0.
+              Introduce un número entero de plazas entre 1 y 200.
             </div>
           </div>
 
@@ -121,7 +121,7 @@
             <label for="imagen" class="form-label">Imagen (ruta)</label>
             <input type="text" class="form-control" id="imagen" placeholder="Ej.: img/curso.jpg" />
             <div class="invalid-feedback">
-              Pon la ruta de una imagen (.jpg, .png, .webp o .svg), por ejemplo img/curso.jpg.
+              Pon la ruta de una imagen dentro de la web (.jpg, .png, .webp o .svg), por ejemplo img/curso.jpg.
             </div>
           </div>
 
@@ -149,6 +149,25 @@
           <!-- Los cursos se cargarán desde admin.js -->
         </div>
       </section>
+
+      <!-- Confirmación antes de borrar un curso -->
+      <div class="modal fade" id="modal-borrar" tabindex="-1" aria-labelledby="titulo-modal-borrar" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title h5" id="titulo-modal-borrar">Borrar curso</h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <p>¿Seguro que quieres borrar el curso <strong id="nombre-curso-borrar"></strong>? No se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" id="confirmar-borrar">Borrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <div id="footer"></div>

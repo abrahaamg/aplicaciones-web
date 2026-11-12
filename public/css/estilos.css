@@ -231,6 +231,12 @@ a {
     pointer-events: auto;
 }
 
+/* Cursos inactivos: en los listados de docentes y aulas, y sus tarjetas en catálogo y Administración */
+.curso-inactivo,
+.tarjeta-inactiva {
+    opacity: 0.55;
+}
+
 /* ===== Formulario de registro ===== */
 
 #formulario-registro {

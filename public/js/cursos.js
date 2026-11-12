@@ -2,9 +2,7 @@
 
 const contenedorCursos = document.getElementById('lista-cursos');
 const cajaBusqueda = document.getElementById('buscar-curso');
-const modalBorrar = new bootstrap.Modal(document.getElementById('modal-borrar'));
 let cursos = [];
-let idCursoABorrar = null;
 
 // Crea un elemento con su clase y su texto
 function crearElemento(etiqueta, clase, texto) {
@@ -27,6 +25,10 @@ function crearTarjeta(curso) {
         imagen.className = 'card-img-top';
         imagen.src = curso.imagen;
         imagen.alt = '';
+        // Si el fichero no existe, se quita la imagen en vez de enseñarla rota
+        imagen.addEventListener('error', function () {
+            imagen.remove();
+        });
         tarjeta.append(imagen);
     }
 
@@ -34,6 +36,7 @@ function crearTarjeta(curso) {
     cuerpo.className = 'card-body';
     cuerpo.append(crearElemento('h2', 'card-title h5', curso.nombre));
     if (curso.estado !== 'activo') {
+        tarjeta.classList.add('tarjeta-inactiva');
         cuerpo.append(crearElemento('span', 'badge bg-secondary mb-2', 'Inactivo'));
     }
     cuerpo.append(crearElemento('p', 'card-text', curso.descripcion));
@@ -54,16 +57,6 @@ function crearTarjeta(curso) {
     enlace.href = 'curso.html?id=' + curso.id_curso;
     enlace.append(crearElemento('span', 'visually-hidden', ' de ' + curso.nombre));
     cuerpo.append(enlace);
-
-    const botonBorrar = crearElemento('button', 'btn btn-outline-danger ms-2', '');
-    botonBorrar.type = 'button';
-    const icono = crearElemento('i', 'bi bi-trash', '');
-    icono.setAttribute('aria-hidden', 'true');
-    botonBorrar.append(icono, crearElemento('span', 'visually-hidden', 'Borrar ' + curso.nombre));
-    botonBorrar.addEventListener('click', function () {
-        pedirConfirmacionBorrar(curso);
-    });
-    cuerpo.append(botonBorrar);
 
     tarjeta.append(cuerpo);
     columna.append(tarjeta);
@@ -91,37 +84,16 @@ try {
 
 // Buscador: pinta solo los cursos cuyo nombre o descripción contienen lo escrito
 function filtrarCursos() {
-    const texto = cajaBusqueda.value.trim().toLowerCase();
+    const texto = normalizarTexto(cajaBusqueda.value.trim());
     if (texto === '') {
         pintarCursos(cursos);
         return;
     }
     const encontrados = cursos.filter(function (curso) {
-        return curso.nombre.toLowerCase().includes(texto)
-            || curso.descripcion.toLowerCase().includes(texto);
+        return normalizarTexto(curso.nombre).includes(texto)
+            || normalizarTexto(curso.descripcion).includes(texto);
     });
     pintarCursos(encontrados, 'No hay cursos que coincidan con la búsqueda.');
 }
 
 cajaBusqueda.addEventListener('input', filtrarCursos);
-
-// Borrar: la papelera abre el modal y solo se borra al confirmar
-function pedirConfirmacionBorrar(curso) {
-    idCursoABorrar = curso.id_curso;
-    document.getElementById('nombre-curso-borrar').textContent = curso.nombre;
-    modalBorrar.show();
-}
-
-document.getElementById('confirmar-borrar').addEventListener('click', function () {
-    const curso = cursos.find(function (c) { return c.id_curso === idCursoABorrar; });
-    const restantes = cursos.filter(function (c) { return c.id_curso !== idCursoABorrar; });
-    modalBorrar.hide();
-
-    if (!guardarCursos(restantes)) {
-        mostrarAlerta('No se ha podido borrar el curso. Inténtalo de nuevo.');
-        return;
-    }
-    cursos = restantes;
-    filtrarCursos();
-    mostrarAlerta('Curso "' + curso.nombre + '" borrado.', 'success');
-});

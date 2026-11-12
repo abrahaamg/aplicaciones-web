@@ -14,6 +14,27 @@ function leerSesion() {
     }
 }
 
+// Manda al login y le dice a qué página volver después de entrar
+function irAlLogin() {
+    const pagina = location.pathname.split('/').pop() || 'index.html';
+    location.replace('login.html?volver=' + encodeURIComponent(pagina));
+}
+
+// Para las páginas que necesitan sesión: si no la hay, al login. Devuelve true si se puede seguir.
+function exigirSesion() {
+    if (leerSesion() === null) {
+        irAlLogin();
+        return false;
+    }
+    return true;
+}
+
+// true si quien tiene la sesión iniciada es administrador
+function esAdmin() {
+    const sesion = leerSesion();
+    return sesion !== null && sesion.rol === 'admin';
+}
+
 // Guarda al usuario como sesión iniciada (sin la contraseña). Devuelve false si no se pudo.
 function iniciarSesion(usuario) {
     try {

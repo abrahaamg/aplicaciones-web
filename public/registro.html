@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="img/logo.svg" type="image/svg+xml" />
+    <title>Registro | Centro de Formación</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="css/estilos.css" />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- CABECERA: igual en todas las páginas -->
+    <div id="navbar"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="contenido" tabindex="-1" class="flex-grow-1 py-4">
+      <div class="container">
+        <nav aria-label="Ruta de navegación">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Registro</li>
+          </ol>
+        </nav>
+
+        <h1>Registro de usuario</h1>
+
+        <!-- Formulario de registro -->
+        <form id="formulario-registro" class="formulario-registro" novalidate>
+          <!-- Nombre completo -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nombre"
+              name="nombre"
+              required
+              maxlength="50"
+            />
+            <div id="error-nombre" class="invalid-feedback">
+              Por favor, ingrese su nombre (máximo 50 caracteres).
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="apellidos" class="form-label">Apellidos</label>
+            <input
+              type="text"
+              class="form-control"
+              id="apellidos"
+              name="apellidos"
+              required
+              maxlength="50"
+            />
+            <div id="error-apellidos" class="invalid-feedback">
+              Por favor, ingrese sus apellidos (máximo 50 caracteres).
+            </div>
+          </div>
+
+          <!-- Correo electrónico -->
+          <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              required
+            />
+            <div id="error-email" class="invalid-feedback">
+              Por favor, ingrese un correo electrónico válido.
+            </div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              required
+              minlength="8"
+            />
+            <div id="error-password" class="invalid-feedback">
+              Por favor, ingrese una contraseña válida (mínimo 8 caracteres).
+            </div>
+          </div>
+
+          <!-- Confirmar Contraseña -->
+          <div class="mb-3">
+            <label for="confirm-password" class="form-label"
+              >Confirmar contraseña</label
+            >
+            <input
+              type="password"
+              class="form-control"
+              id="confirm-password"
+              name="confirm_password"
+              required
+              minlength="8"
+            />
+            <div id="error-confirm-password" class="invalid-feedback">
+              Las contraseñas no coinciden.
+            </div>
+          </div>
+
+          <!-- Botón de envío -->
+          <button type="submit" class="btn btn-primary">Registrarse</button>
+          <div
+            id="mensaje-confirmacion"
+            class="alert alert-success mt-3 d-none"
+            role="status"
+          >
+            ¡Registro completado correctamente!
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- PIE: igual en todas las páginas -->
+    <div id="footer"></div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/comun.js"></script>
+    <script src="js/registro.js"></script>
+    <script src="js/components.js"></script>
+  </body>
+</html>

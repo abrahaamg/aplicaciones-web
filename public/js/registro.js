@@ -1,109 +1,99 @@
+// Registro de alumnos. Hasta que haya servidor no se guarda el usuario:
+// al registrarse se inicia la sesión con sus datos y se vuelve a la portada.
 
+// Con la sesión ya iniciada no tiene sentido registrarse otra vez
+if (leerSesion() !== null) {
+    location.replace('index.html');
+}
 
 const formRegistro = document.getElementById('formulario-registro');
+const nombre = document.getElementById('nombre');
+const apellidos = document.getElementById('apellidos');
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirm-password');
+const errorConfirmPassword = document.getElementById('error-confirm-password');
 
-if(formRegistro) {
-    // Obtener los campos
-    const nombre = document.getElementById('nombre');
-    const apellidos = document.getElementById('apellidos');
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    const confirmPassword = document.getElementById('confirm-password'); // id corregido
-    const errorConfirmPassword = document.getElementById('error-confirm-password');
-
-    // Mensaje de confirmación
-    const mensajeConfirmacion = document.getElementById('mensaje-confirmacion');
-
-    // Validar nombre
-    function validarNombre() {
-        const invalido = nombre.value.trim() === '' || nombre.value.length > 50;
-        nombre.classList.toggle('is-invalid', invalido);
-        return !invalido;
-    }
-
-    // Validar apellidos
-    function validarApellidos() {
-        const invalido = apellidos.value.trim() === '' || apellidos.value.length > 50;
-        apellidos.classList.toggle('is-invalid', invalido);
-        return !invalido;
-    }
-
-    // Validar email
-    function validarEmail() {
-        const invalido = email.value.trim() === '' || !email.checkValidity();
-        email.classList.toggle('is-invalid', invalido);
-        return !invalido;
-    }
-
-    // Validar contraseña
-    function validarPassword() {
-        const invalido = password.value.length < 8;
-        password.classList.toggle('is-invalid', invalido);
-        return !invalido;
-    }
-
-    // Validar confirmación de contraseña
-    function validarConfirmPassword() {
-        const vacio = confirmPassword.value === '';
-        const invalido = vacio || confirmPassword.value !== password.value;
-
-        errorConfirmPassword.textContent = vacio
-            ? 'Por favor, confirme su contraseña.'
-            : 'Las contraseñas no coinciden.';
-
-        confirmPassword.classList.toggle('is-invalid', invalido);
-        return !invalido;
-    }
-
-    // Validar mientras se escriben los datos
-    nombre.addEventListener('input', validarNombre);
-    apellidos.addEventListener('input', validarApellidos);
-    email.addEventListener('input', validarEmail);
-    confirmPassword.addEventListener('input', validarConfirmPassword);
-    password.addEventListener('input', () => {
-        validarPassword();
-        // Solo se comprueba si el usuario ya ha escrito algo en la confirmación
-        if (confirmPassword.value !== '') {
-            validarConfirmPassword();
-        }
-    });
-
-    // Ocultar el mensaje de éxito si el usuario vuelve a escribir
-    formRegistro.addEventListener('input', () => {
-        mensajeConfirmacion.classList.add('d-none');
-    });
-
-    // Procesar el formulario
-    formRegistro.addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        const nombreValido = validarNombre();
-        const apellidosValidos = validarApellidos();
-        const emailValido = validarEmail();
-        const passwordValida = validarPassword();
-        const confirmPasswordValida = validarConfirmPassword();
-
-        if (
-            nombreValido &&
-            apellidosValidos &&
-            emailValido &&
-            passwordValida &&
-            confirmPasswordValida
-        ) {
-            const sesionIniciada = iniciarSesion({
-                correo: email.value.trim().toLowerCase(),
-                nombre: nombre.value.trim() + ' ' + apellidos.value.trim(),
-                rol: 'alumno'
-            });
-
-            if (sesionIniciada) {
-                location.href = 'index.html';
-            } else {
-                mensajeConfirmacion.classList.add('d-none');
-                mostrarAlerta('No se pudo iniciar la sesión. Inténtalo de nuevo.');
-            }
-        } else {
-            mensajeConfirmacion.classList.add('d-none');
-        }
-    });
+// Un nombre tiene que llevar alguna letra: "12345" o solo espacios no valen
+function textoConLetras(campo, maximo) {
+    const valor = campo.value.trim();
+    const invalido = !/\p{L}/u.test(valor) || valor.length > maximo;
+    campo.classList.toggle('is-invalid', invalido);
+    return !invalido;
 }
+
+function validarNombre() {
+    return textoConLetras(nombre, 50);
+}
+
+function validarApellidos() {
+    return textoConLetras(apellidos, 50);
+}
+
+// El navegador da por bueno "a@b"; aquí se pide además un punto en el dominio
+function validarEmail() {
+    const valor = email.value.trim();
+    const invalido = !email.checkValidity() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+    email.classList.toggle('is-invalid', invalido);
+    return !invalido;
+}
+
+// Mínimo 8 caracteres sin contar los espacios de los extremos
+function validarPassword() {
+    const invalido = password.value.trim().length < 8;
+    password.classList.toggle('is-invalid', invalido);
+    return !invalido;
+}
+
+function validarConfirmPassword() {
+    const vacio = confirmPassword.value === '';
+    const invalido = vacio || confirmPassword.value !== password.value;
+
+    errorConfirmPassword.textContent = vacio
+        ? 'Por favor, confirme su contraseña.'
+        : 'Las contraseñas no coinciden.';
+
+    confirmPassword.classList.toggle('is-invalid', invalido);
+    return !invalido;
+}
+
+// Validar mientras se escriben los datos
+nombre.addEventListener('input', validarNombre);
+apellidos.addEventListener('input', validarApellidos);
+email.addEventListener('input', validarEmail);
+confirmPassword.addEventListener('input', validarConfirmPassword);
+password.addEventListener('input', () => {
+    validarPassword();
+    // Solo se comprueba si el usuario ya ha escrito algo en la confirmación
+    if (confirmPassword.value !== '') {
+        validarConfirmPassword();
+    }
+});
+
+formRegistro.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    // Se validan todos para marcar a la vez todos los campos con error
+    const resultados = [
+        validarNombre(),
+        validarApellidos(),
+        validarEmail(),
+        validarPassword(),
+        validarConfirmPassword()
+    ];
+    if (resultados.includes(false)) {
+        return;
+    }
+
+    const sesionIniciada = iniciarSesion({
+        correo: email.value.trim().toLowerCase(),
+        nombre: nombre.value.trim() + ' ' + apellidos.value.trim(),
+        rol: 'alumno'
+    });
+
+    if (sesionIniciada) {
+        location.href = 'index.html';
+    } else {
+        mostrarAlerta('No se pudo iniciar la sesión. Inténtalo de nuevo.');
+    }
+});

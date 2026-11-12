@@ -97,8 +97,11 @@ a {
     text-align: center;
 }
 
-.navbar-centro .btn-registro {
-    margin-left: 0.75rem;
+/* Separación entre los dos botones solo con el menú en línea; en el móvil van uno debajo de otro */
+@media (min-width: 1200px) {
+    .navbar-centro .btn-registro {
+        margin-left: 0.75rem;
+    }
 }
 
 .navbar-centro .nav-link.active.btn-especial {

@@ -7,13 +7,16 @@
     "scripts": {
         "start": "node index.js",
         "dev": "nodemon index.js",
-        "cursos": "node listar-cursos.js"
+        "cursos": "node listar-cursos.js",
+        "datos": "node db/cargar-datos.js"
     },
     "dependencies": {
+        "bcryptjs": "^3.0.3",
         "ejs": "^3.1.10",
         "express": "^4.22.3",
         "express-session": "^1.19.0",
-        "morgan": "^1.12.1"
+        "morgan": "^1.12.1",
+        "mysql2": "^3.24.6"
     },
     "devDependencies": {
         "nodemon": "^3.1.14"

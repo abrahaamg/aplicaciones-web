@@ -1,0 +1,90 @@
+[
+    {
+        "id_usuario": 1,
+        "nombre": "Admin",
+        "apellidos": "Centro",
+        "correo": "admin@example.com",
+        "password": "$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO",
+        "rol": "admin",
+        "estado": "activo",
+        "tema": "claro",
+        "fuente": "normal",
+        "contraste": false
+    },
+    {
+        "id_usuario": 2,
+        "nombre": "Ana",
+        "apellidos": "López Martín",
+        "correo": "alumno@example.com",
+        "password": "$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO",
+        "telefono": "600000001",
+        "rol": "alumno",
+        "estado": "activo",
+        "tema": "claro",
+        "fuente": "normal",
+        "contraste": false
+    },
+    {
+        "id_usuario": 3,
+        "nombre": "Carlos",
+        "apellidos": "Ruiz Sanz",
+        "correo": "carlos.ruiz@example.com",
+        "password": "$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO",
+        "telefono": "600000002",
+        "rol": "alumno",
+        "estado": "activo",
+        "tema": "claro",
+        "fuente": "normal",
+        "contraste": false
+    },
+    {
+        "id_usuario": 4,
+        "nombre": "Lucía",
+        "apellidos": "Fernández Gil",
+        "correo": "lucia.fernandez@example.com",
+        "password": "$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO",
+        "rol": "alumno",
+        "estado": "activo",
+        "tema": "claro",
+        "fuente": "normal",
+        "contraste": false
+    },
+    {
+        "id_usuario": 5,
+        "nombre": "Javier",
+        "apellidos": "Moreno Díaz",
+        "correo": "javier.moreno@example.com",
+        "password": "$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO",
+        "telefono": "600000004",
+        "rol": "alumno",
+        "estado": "activo",
+        "tema": "claro",
+        "fuente": "normal",
+        "contraste": false
+    },
+    {
+        "id_usuario": 6,
+        "nombre": "Sara",
+        "apellidos": "Navarro Rey",
+        "correo": "sara.navarro@example.com",
+        "password": "$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO",
+        "rol": "alumno",
+        "estado": "activo",
+        "tema": "claro",
+        "fuente": "normal",
+        "contraste": false
+    },
+    {
+        "id_usuario": 7,
+        "nombre": "Pablo",
+        "apellidos": "Ortega Vela",
+        "correo": "pablo.ortega@example.com",
+        "password": "$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO",
+        "telefono": "600000006",
+        "rol": "alumno",
+        "estado": "inactivo",
+        "tema": "claro",
+        "fuente": "normal",
+        "contraste": false
+    }
+]

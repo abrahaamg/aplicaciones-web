@@ -9,7 +9,6 @@
         "fecha_fin": "2026-12-18",
         "horario": "Lunes y miércoles, 16:00 a 18:00",
         "plazas": 20,
-        "imagen": "",
         "estado": "activo"
     },
     {
@@ -22,7 +21,6 @@
         "fecha_fin": "2026-12-15",
         "horario": "Martes y jueves, 10:00 a 12:00",
         "plazas": 15,
-        "imagen": "",
         "estado": "activo"
     },
     {
@@ -35,7 +33,90 @@
         "fecha_fin": "2027-02-12",
         "horario": "Viernes, 09:00 a 13:00",
         "plazas": 12,
-        "imagen": "",
         "estado": "inactivo"
+    },
+    {
+        "id_curso": 4,
+        "nombre": "JavaScript desde cero",
+        "descripcion": "El lenguaje de la web: funciones, arrays, objetos y eventos.",
+        "id_docente": 1,
+        "id_aula": 3,
+        "fecha_inicio": "2026-12-01",
+        "fecha_fin": "2027-01-29",
+        "horario": "Lunes y miércoles, 18:00 a 20:00",
+        "plazas": 15,
+        "estado": "activo"
+    },
+    {
+        "id_curso": 5,
+        "nombre": "Node.js y Express",
+        "descripcion": "Servidores web con rutas, formularios y conexión a una base de datos.",
+        "id_docente": 1,
+        "id_aula": 3,
+        "fecha_inicio": "2027-02-01",
+        "fecha_fin": "2027-03-19",
+        "horario": "Martes y jueves, 18:00 a 20:00",
+        "plazas": 3,
+        "estado": "activo"
+    },
+    {
+        "id_curso": 6,
+        "nombre": "Ciberseguridad básica",
+        "descripcion": "Contraseñas, copias de seguridad y cómo detectar fraudes por correo.",
+        "id_docente": 4,
+        "id_aula": 4,
+        "fecha_inicio": "2027-01-18",
+        "fecha_fin": "2027-02-26",
+        "horario": "Miércoles, 10:00 a 13:00",
+        "plazas": 40,
+        "estado": "activo"
+    },
+    {
+        "id_curso": 7,
+        "nombre": "Python para análisis de datos",
+        "descripcion": "Leer, limpiar y representar datos con Python.",
+        "id_docente": 5,
+        "id_aula": 2,
+        "fecha_inicio": "2027-02-08",
+        "fecha_fin": "2027-04-02",
+        "horario": "Lunes, 16:00 a 19:00",
+        "plazas": 25,
+        "estado": "activo"
+    },
+    {
+        "id_curso": 8,
+        "nombre": "Introducción a la inteligencia artificial",
+        "descripcion": "Qué es un modelo, cómo aprende y para qué se usa.",
+        "id_docente": 5,
+        "id_aula": 4,
+        "fecha_inicio": "2027-03-01",
+        "fecha_fin": "2027-04-30",
+        "horario": "Jueves, 16:00 a 19:00",
+        "plazas": 50,
+        "estado": "activo"
+    },
+    {
+        "id_curso": 9,
+        "nombre": "Accesibilidad web",
+        "descripcion": "Páginas que se pueden usar con teclado, lector de pantalla y alto contraste.",
+        "id_docente": 2,
+        "id_aula": 1,
+        "fecha_inicio": "2026-10-05",
+        "fecha_fin": "2026-10-30",
+        "horario": "Viernes, 10:00 a 13:00",
+        "plazas": 20,
+        "estado": "inactivo"
+    },
+    {
+        "id_curso": 10,
+        "nombre": "SQL avanzado",
+        "descripcion": "Subconsultas, agrupaciones y vistas.",
+        "id_docente": 3,
+        "id_aula": 2,
+        "fecha_inicio": "2027-04-05",
+        "fecha_fin": "2027-05-14",
+        "horario": "Martes, 09:00 a 12:00",
+        "plazas": 20,
+        "estado": "activo"
     }
 ]

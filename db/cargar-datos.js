@@ -28,7 +28,7 @@ function leerJson(tabla) {
 
 // Columnas en las que se puede escribir (las calculadas, como matricula_activa, no)
 async function columnasDe(conexion, tabla) {
-    const [columnas] = await conexion.query('SHOW COLUMNS FROM ??', [tabla]);
+    const columnas = await conexion.query('SHOW COLUMNS FROM ' + conexion.escapeId(tabla));
     return columnas
         .filter(function (columna) { return !columna.Extra.includes('GENERATED') && !columna.Extra.includes('PERSISTENT'); })
         .map(function (columna) { return columna.Field; });
@@ -47,7 +47,9 @@ async function insertarFilas(conexion, tabla, filas) {
             return false;
         });
         const valores = claves.map(function (clave) { return fila[clave]; });
-        await conexion.query('INSERT INTO ?? (??) VALUES (?)', [tabla, claves, valores]);
+        const nombres = claves.map(function (clave) { return conexion.escapeId(clave); }).join(', ');
+        const huecos = claves.map(function () { return '?'; }).join(', ');
+        await conexion.query('INSERT INTO ' + conexion.escapeId(tabla) + ' (' + nombres + ') VALUES (' + huecos + ')', valores);
     }
 
     if (ignoradas.size > 0) {
@@ -63,7 +65,7 @@ async function cargarDatos() {
         // DELETE y no TRUNCATE ni ALTER TABLE: esos confirman la transacción por su cuenta
         // y, si algo fallara después, las tablas se quedarían vacías.
         for (const tabla of [...TABLAS].reverse()) {
-            await conexion.query('DELETE FROM ??', [tabla]);
+            await conexion.query('DELETE FROM ' + conexion.escapeId(tabla));
         }
 
         for (const tabla of TABLAS) {

@@ -11,7 +11,7 @@ aplicaciones-web/
 ├── index.js              arranque de Express
 ├── package.json
 ├── README.md             manual de instalación (entregable)
-├── config/database.js    conexión a MariaDB (mysql2)        [bloque backend]
+├── config/database.js    conexión a MariaDB (mariadb, .env) [bloque backend]
 ├── middlewares/          authRequire, adminAuth...          [bloque backend]
 ├── routes/               URL -> función del controlador     [bloque backend]
 ├── controllers/          valida datos y aplica reglas        [bloque backend]

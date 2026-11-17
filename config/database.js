@@ -1,16 +1,17 @@
 // Conexión a MariaDB. Todo el servidor usa este pool: cada consulta coge una conexión
 // libre y la devuelve al terminar, sin abrir una nueva cada vez.
-// Los valores por defecto son los de XAMPP (usuario root sin contraseña).
+// Los datos de conexión vienen del fichero .env (copia de .env.example), que no se sube a GitHub.
 
-const mysql = require('mysql2/promise');
+const mariadb = require('mariadb');
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT) || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'aw_practica',
+const pool = mariadb.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
     dateStrings: true,
+    bigIntAsNumber: true,
+    insertIdAsNumber: true,
     connectionLimit: 10
 });
 
@@ -21,7 +22,7 @@ async function comprobarConexion() {
         console.log('Conectado a MariaDB');
     } catch (error) {
         console.error('No se pudo conectar a MariaDB: ' + error.message);
-        console.error('Revisa que XAMPP tenga MySQL arrancado y que db/aw_practica.sql esté importado.');
+        console.error('Revisa que XAMPP tenga MySQL arrancado, que db/aw_practica.sql esté importado y los datos de .env.');
     }
 }
 

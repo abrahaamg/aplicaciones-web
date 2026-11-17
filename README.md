@@ -13,6 +13,7 @@ aplicaciones-web/
 ├── index.js           servidor (Node.js + Express)
 ├── listar-cursos.js   script de Node que lista los cursos en la terminal
 ├── config/database.js conexión a MariaDB, la usa todo el servidor
+├── .env.example       datos de conexión a MariaDB; se copia como .env
 ├── db/                script SQL que crea las tablas y cargar-datos.js (npm run datos)
 ├── data/              datos de prueba en JSON, uno por tabla
 ├── public/            lo que se manda al navegador: HTML, CSS, JS e imágenes
@@ -27,18 +28,19 @@ Sigue la plantilla del profe (`recurso-bootstrap`): el código del servidor va e
 
 ### Requisitos
 
-- Node.js 18 o superior
+- Node.js 20.6 o superior (para leer el fichero `.env`)
 - XAMPP con MariaDB arrancado
 
 ### Pasos
 
 1. Clonar el repositorio y entrar en la carpeta.
 2. Instalar dependencias: `npm install`
-3. Con MySQL arrancado en XAMPP, crear la base de datos importando `db/aw_practica.sql` desde phpMyAdmin (pestaña Importar). El script borra la base `aw_practica` si ya existe, así que sirve también para empezar de cero. Si MariaDB no usa `root` sin contraseña, se cambia con las variables `DB_USER` y `DB_PASSWORD`.
-4. Cargar los datos: `npm run datos`. Vacía las tablas y las rellena con `data/usuarios.json`, `docentes.json`, `aulas.json`, `cursos.json` y `matriculas.json`. Cada JSON es una lista de objetos con las claves iguales a las columnas de su tabla. Para usar otros datos basta con cambiar esos ficheros, sin tocar código. Si algo falla, no se carga nada y las tablas se quedan como estaban.
-5. Arrancar el servidor: `npm start` (o `npm run dev` para que se reinicie solo al guardar).
-6. Abrir http://localhost:3000
-7. Para ver los cursos en la terminal, sin servidor ni navegador: `npm run cursos`
+3. Copiar `.env.example` como `.env`. Lleva los datos de conexión a MariaDB (los de XAMPP: `root` sin contraseña). Si tu MariaDB usa otros, se cambian ahí. El `.env` no se sube a GitHub.
+4. Con MySQL arrancado en XAMPP, crear la base de datos importando `db/aw_practica.sql` desde phpMyAdmin (pestaña Importar). El script borra la base `aw_practica` si ya existe, así que sirve también para empezar de cero.
+5. Cargar los datos: `npm run datos`. Vacía las tablas y las rellena con `data/usuarios.json`, `docentes.json`, `aulas.json`, `cursos.json` y `matriculas.json`. Cada JSON es una lista de objetos con las claves iguales a las columnas de su tabla. Para usar otros datos basta con cambiar esos ficheros, sin tocar código. Si algo falla, no se carga nada y las tablas se quedan como estaban.
+6. Arrancar el servidor: `npm start` (o `npm run dev` para que se reinicie solo al guardar).
+7. Abrir http://localhost:3000
+8. Para ver los cursos en la terminal, sin servidor ni navegador: `npm run cursos`
 
 ### Usuarios de prueba
 

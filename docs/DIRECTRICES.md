@@ -4,19 +4,18 @@ Normas para que los dos trabajemos igual. Si el profe publica su propia estructu
 
 ## 1. Estructura
 
-Seguimos la misma estructura que la plantilla del profe (`recurso-bootstrap`): `index.js` en la raíz, `routes/`, `views/`, `public/` y `data/`.
+Seguimos la misma estructura que la plantilla del profe (`recurso-bootstrap`): `index.js` en la raíz, `routes/`, `public/` y `data/`. La plantilla trae `views/` con EJS, pero no lo usamos: el enunciado pide que el navegador pida los datos con `fetch` y el servidor conteste en JSON.
 
 ```
 aplicaciones-web/
 ├── index.js              arranque de Express
 ├── package.json
 ├── README.md             manual de instalación (entregable)
-├── config/database.js    conexión a MariaDB (mysql2)        [bloque backend]
+├── config/database.js    conexión a MariaDB (mariadb, .env) [bloque backend]
 ├── middlewares/          authRequire, adminAuth...          [bloque backend]
 ├── routes/               URL -> función del controlador     [bloque backend]
 ├── controllers/          valida datos y aplica reglas        [bloque backend]
 ├── models/               consultas SQL, una clase por tabla  [bloque backend]
-├── views/                páginas EJS + partials/             [bloque backend]
 ├── data/                 JSON iniciales que dé el profe
 ├── db/aw_practica.sql    script SQL que dé el profe
 ├── docs/                 directrices, manual de usuario, decisiones
@@ -37,7 +36,7 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 | 1. HTML + CSS | Páginas estáticas con Bootstrap. Navbar y footer en `components/`, cargados por `js/components.js`. | `public/*.html`, `public/components/`, `public/css/estilos.css` |
 | 2. JS + DOM + formularios | Validación, eventos, accesibilidad, LocalStorage. | `public/js/<pagina>.js`, `public/js/comun.js` |
 | 3. Fetch + JSON | Los datos se leen de JSON con `fetch`. | `public/js/`, `data/` |
-| 4. Backend | Express + MariaDB. Las páginas pasan a `views/*.ejs` y navbar/footer a `views/partials/`. La API vive en `/api/...`. | `routes/`, `views/`, `config/`, `middleware/` |
+| 4. Backend | Express + MariaDB. Las páginas siguen en `public/` y piden los datos con `fetch` a la API (`/api/...`), que contesta en JSON. | `routes/`, `controllers/`, `models/`, `config/`, `middlewares/` |
 
 ## 2. Nombres e idioma
 

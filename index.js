@@ -20,10 +20,6 @@ app.use(session({
 // Ficheros estáticos (HTML, CSS, JS, imágenes)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Vistas EJS (se activan en el bloque de backend)
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
 // Rutas
 // app.use('/', require('./routes/index'));
 // app.use('/api/cursos', require('./routes/cursos'));

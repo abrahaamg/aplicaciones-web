@@ -2,7 +2,7 @@
 
 Práctica obligatoria de Aplicaciones Web, curso 2026/27. Plataforma web para gestionar los cursos, docentes, aulas y matrículas de un centro de formación.
 
-**Stack:** HTML5, CSS3, JavaScript, Bootstrap 5.1.3 y Bootstrap Icons · Node.js + Express + EJS · MariaDB (XAMPP).
+**Stack:** HTML5, CSS3, JavaScript, Bootstrap 5.1.3 y Bootstrap Icons · Node.js + Express · MariaDB (XAMPP).
 
 Las normas de trabajo del equipo están en [docs/DIRECTRICES.md](docs/DIRECTRICES.md).
 

@@ -1,83 +1,132 @@
--- Base de datos del centro de formación.
--- Se importa desde phpMyAdmin (pestaña Importar) o con: mysql -u root < db/aw_practica.sql
--- Borra la base de datos si ya existe, así que sirve también para empezar de cero.
--- Solo crea las tablas vacías. Los datos se cargan después con: npm run datos
+-- ================================================================
+-- UNIVERSIDAD COMPLUTENSE DE MADRID · APLICACIONES WEB 2026-2027
+-- PRACTICA OBLIGATORIA: CENTRO DE FORMACION
+-- ESQUEMA OFICIAL Y UNICO · MariaDB / XAMPP
+-- ================================================================
+-- Este script define el MODELO COMUN para todos los grupos.
+-- No se permite crear otras tablas, renombrar columnas ni cambiar
+-- tipos, claves o relaciones. No utiliza DROP: conserva datos.
+-- Ejecutar desde phpMyAdmin (Importar) o cliente MariaDB.
+-- ================================================================
 
-DROP DATABASE IF EXISTS aw_practica;
-CREATE DATABASE aw_practica CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
+CREATE DATABASE IF NOT EXISTS aw_practica
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
 USE aw_practica;
 
--- Alumnos y administradores. Las preferencias de accesibilidad usan los mismos
--- valores que js/comun.js: tema claro u oscuro, tamaño de letra y alto contraste.
-CREATE TABLE usuarios (
-    id_usuario   INT AUTO_INCREMENT PRIMARY KEY,
-    nombre       VARCHAR(50)  NOT NULL,
-    apellidos    VARCHAR(100) NOT NULL,
-    correo       VARCHAR(100) NOT NULL UNIQUE,
-    password     VARCHAR(255) NOT NULL,
-    telefono     VARCHAR(20),
-    rol          ENUM('alumno', 'admin') NOT NULL DEFAULT 'alumno',
-    fecha_alta   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    estado       ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
-    tema         ENUM('claro', 'oscuro') NOT NULL DEFAULT 'claro',
-    fuente       ENUM('normal', 'grande', 'muy-grande') NOT NULL DEFAULT 'normal',
-    contraste    BOOLEAN NOT NULL DEFAULT FALSE
-);
+-- 1. USUARIOS (alumnos y administradores)
+CREATE TABLE IF NOT EXISTS usuarios (
+    id_usuario       INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nombre           VARCHAR(100) NOT NULL,
+    email            VARCHAR(150) NOT NULL,
+    password         VARCHAR(255) NOT NULL,
+    rol              ENUM('alumno', 'admin') NOT NULL DEFAULT 'alumno',
+    fecha_registro   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    activo           BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT pk_usuarios PRIMARY KEY (id_usuario),
+    CONSTRAINT uq_usuarios_email UNIQUE (email)
+) ENGINE=InnoDB;
 
-CREATE TABLE docentes (
-    id_docente   INT AUTO_INCREMENT PRIMARY KEY,
-    nombre       VARCHAR(50)  NOT NULL,
-    apellidos    VARCHAR(100) NOT NULL,
-    especialidad VARCHAR(100),
-    correo       VARCHAR(100) NOT NULL UNIQUE,
-    telefono     VARCHAR(20),
-    foto         VARCHAR(255),
-    estado       ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo'
-);
+-- EXCEPCION DOCENTE 2026-2027: en esta practica local se admiten
+-- contrasenas en texto claro para simplificar el login.
+-- En aplicaciones reales deben almacenarse con un hash seguro
+-- especifico para contrasenas (p. ej., Argon2id o bcrypt).
 
-CREATE TABLE aulas (
-    id_aula      INT AUTO_INCREMENT PRIMARY KEY,
-    nombre       VARCHAR(50) NOT NULL UNIQUE,
-    edificio     VARCHAR(50),
-    planta       VARCHAR(20),
-    capacidad    INT NOT NULL,
-    equipamiento VARCHAR(255),
-    estado       ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
-    CONSTRAINT chk_aula_capacidad CHECK (capacidad > 0)
-);
+-- 2. DOCENTES
+CREATE TABLE IF NOT EXISTS docentes (
+    id_docente       INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nombre           VARCHAR(100) NOT NULL,
+    email            VARCHAR(150) NOT NULL,
+    especialidad     VARCHAR(100) NOT NULL,
+    telefono         VARCHAR(20) NULL,
+    foto             VARCHAR(255) NULL,
+    activo           BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT pk_docentes PRIMARY KEY (id_docente),
+    CONSTRAINT uq_docentes_email UNIQUE (email)
+) ENGINE=InnoDB;
 
--- RESTRICT: la base de datos no deja borrar un docente o un aula que tenga cursos.
--- Las reglas más finas (reasignar los cursos, aula con curso activo) van en el servidor.
-CREATE TABLE cursos (
-    id_curso     INT AUTO_INCREMENT PRIMARY KEY,
-    nombre       VARCHAR(100) NOT NULL UNIQUE,
-    descripcion  TEXT,
-    id_docente   INT NOT NULL,
-    id_aula      INT NOT NULL,
-    fecha_inicio DATE NOT NULL,
-    fecha_fin    DATE NOT NULL,
-    horario      VARCHAR(100),
-    plazas       INT NOT NULL,
-    imagen       VARCHAR(255),
-    estado       ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
-    CONSTRAINT fk_curso_docente FOREIGN KEY (id_docente) REFERENCES docentes (id_docente) ON DELETE RESTRICT,
-    CONSTRAINT fk_curso_aula FOREIGN KEY (id_aula) REFERENCES aulas (id_aula) ON DELETE RESTRICT,
-    CONSTRAINT chk_curso_plazas CHECK (plazas > 0),
-    CONSTRAINT chk_curso_fechas CHECK (fecha_fin >= fecha_inicio)
-);
+-- 3. AULAS
+CREATE TABLE IF NOT EXISTS aulas (
+    id_aula          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nombre           VARCHAR(50) NOT NULL,
+    edificio         VARCHAR(50) NOT NULL,
+    planta           VARCHAR(20) NULL,
+    capacidad        INT UNSIGNED NOT NULL,
+    equipamiento     TEXT NULL,
+    estado           ENUM('activa', 'inactiva') NOT NULL DEFAULT 'activa',
+    CONSTRAINT pk_aulas PRIMARY KEY (id_aula),
+    CONSTRAINT chk_aulas_capacidad CHECK (capacidad > 0)
+) ENGINE=InnoDB;
 
--- Cancelar no borra la fila: pasa a 'cancelada' y se queda en el historial.
--- matricula_activa vale 1 en las activas y NULL en las canceladas. Como un índice
--- UNIQUE admite varios NULL, un alumno solo puede tener una matrícula activa por curso,
--- pero sí puede volver a matricularse después de cancelar.
-CREATE TABLE matriculas (
-    id_matricula     INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario       INT NOT NULL,
-    id_curso         INT NOT NULL,
+-- 4. CURSOS
+CREATE TABLE IF NOT EXISTS cursos (
+    id_curso         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id_docente       INT UNSIGNED NOT NULL,
+    id_aula          INT UNSIGNED NOT NULL,
+    nombre           VARCHAR(100) NOT NULL,
+    descripcion      TEXT NULL,
+    fecha_inicio     DATE NOT NULL,
+    fecha_fin        DATE NOT NULL,
+    horario          VARCHAR(100) NULL,
+    plazas           INT UNSIGNED NOT NULL,
+    imagen           VARCHAR(255) NULL,
+    estado           ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
+    CONSTRAINT pk_cursos PRIMARY KEY (id_curso),
+    CONSTRAINT fk_cursos_docentes FOREIGN KEY (id_docente)
+        REFERENCES docentes (id_docente)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_cursos_aulas FOREIGN KEY (id_aula)
+        REFERENCES aulas (id_aula)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_cursos_fechas CHECK (fecha_fin >= fecha_inicio),
+    CONSTRAINT chk_cursos_plazas CHECK (plazas > 0),
+    INDEX idx_cursos_docente (id_docente),
+    INDEX idx_cursos_aula (id_aula)
+) ENGINE=InnoDB;
+
+-- 5. MATRICULAS
+CREATE TABLE IF NOT EXISTS matriculas (
+    id_matricula     INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    id_usuario       INT UNSIGNED NOT NULL,
+    id_curso         INT UNSIGNED NOT NULL,
     fecha_matricula  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     estado           ENUM('activa', 'cancelada') NOT NULL DEFAULT 'activa',
-    matricula_activa TINYINT AS (IF(estado = 'activa', 1, NULL)) PERSISTENT,
-    CONSTRAINT fk_matricula_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario) ON DELETE RESTRICT,
-    CONSTRAINT fk_matricula_curso FOREIGN KEY (id_curso) REFERENCES cursos (id_curso) ON DELETE RESTRICT,
-    CONSTRAINT uq_matricula_activa UNIQUE (id_usuario, id_curso, matricula_activa)
-);
+    CONSTRAINT pk_matriculas PRIMARY KEY (id_matricula),
+    CONSTRAINT uq_matriculas_usuario_curso UNIQUE (id_usuario, id_curso),
+    CONSTRAINT fk_matriculas_usuarios FOREIGN KEY (id_usuario)
+        REFERENCES usuarios (id_usuario)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_matriculas_cursos FOREIGN KEY (id_curso)
+        REFERENCES cursos (id_curso)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    INDEX idx_matriculas_curso (id_curso)
+) ENGINE=InnoDB;
+
+-- ================================================================
+-- REGLAS QUE DEBE APLICAR EL SERVIDOR (no basta con las FK)
+-- ================================================================
+-- 1. Solo usuarios con rol 'alumno' pueden matricularse.
+-- 2. El usuario debe estar activo y el curso en estado 'activo'.
+-- 3. Antes de crear/activar matricula, comprobar plazas libres
+--    contando SOLO matriculas en estado 'activa'. Debe hacerse
+--    con transaccion / bloqueo para evitar sobreocupacion simultanea.
+-- 4. No se puede duplicar una pareja (id_usuario, id_curso).
+--    Si existe cancelada, reactivarla con UPDATE y actualizar
+--    fecha_matricula; NO insertar una segunda fila.
+-- 5. Cancelar = UPDATE estado='cancelada'; NO DELETE.
+-- 6. Solo 'admin' puede crear, modificar o eliminar cursos.
+-- 7. Consultas SQL parametrizadas; validacion en servidor.
+-- 8. 'foto' e 'imagen' almacenan rutas/identificadores relativos,
+--    NUNCA datos binarios ni rutas elegidas por el cliente.
+--    Verificar tipo real, tamano y nombre seguro al subir archivos.
+-- 9. Las FK impiden borrar un docente/aula con cursos asociados
+--    y un curso con matriculas. Se puede desactivar en su lugar.
+-- 10. La capacidad fisica de un aula y el numero de plazas
+--     ofertadas del curso se comprobaran segun la logica de negocio.
+-- ================================================================
+
+-- Consultas de comprobacion (descomentar en phpMyAdmin):
+-- SHOW TABLES;
+-- SHOW CREATE TABLE cursos;
+-- SHOW CREATE TABLE matriculas;

@@ -22,7 +22,7 @@ async function comprobarConexion() {
         console.log('Conectado a MariaDB');
     } catch (error) {
         console.error('No se pudo conectar a MariaDB: ' + error.message);
-        console.error('Revisa que XAMPP tenga MySQL arrancado, que db/aw_practica.sql esté importado y los datos de .env.');
+        console.error('Revisa que XAMPP tenga MySQL arrancado, que db/aw_practica.sql y db/aw_datos.sql estén importados y los datos de .env.');
     }
 }
 

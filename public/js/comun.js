@@ -109,3 +109,43 @@ function mostrarAlerta(mensaje, tipo = 'danger') {
         }, 5000);
     }
 }
+
+// Pide datos a la API del servidor. Todas las páginas usan esta función en vez de su propio fetch.
+// Manda y recibe JSON. Devuelve lo que conteste el servidor (null si no contesta nada).
+// Si algo falla, enseña el mensaje con mostrarAlerta y lanza el error, para que la página
+// pueda reaccionar (volver a activar un botón, por ejemplo). error.estado lleva el código HTTP.
+//     const cursos = await pedirApi('/api/cursos');
+//     await pedirApi('/api/matriculas', { metodo: 'POST', datos: { id_curso: 3 } });
+async function pedirApi(url, { metodo = 'GET', datos } = {}) {
+    const opciones = { method: metodo, headers: { Accept: 'application/json' } };
+    if (datos !== undefined) {
+        opciones.headers['Content-Type'] = 'application/json';
+        opciones.body = JSON.stringify(datos);
+    }
+
+    let respuesta;
+    try {
+        respuesta = await fetch(url, opciones);
+    } catch (error) {
+        mostrarAlerta('No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.');
+        throw error;
+    }
+
+    // Si la respuesta no es en JSON se queda en null
+    let cuerpo = null;
+    try {
+        cuerpo = await respuesta.json();
+    } catch {
+        // No era JSON
+    }
+
+    if (!respuesta.ok) {
+        const mensaje = cuerpo && cuerpo.error ? cuerpo.error : 'Ha ocurrido un error (' + respuesta.status + '). Inténtalo de nuevo.';
+        mostrarAlerta(mensaje);
+        const error = new Error(mensaje);
+        error.estado = respuesta.status;
+        throw error;
+    }
+
+    return cuerpo;
+}

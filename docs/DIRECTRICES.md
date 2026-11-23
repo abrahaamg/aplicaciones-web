@@ -66,7 +66,7 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 - `const` y `let`, nunca `var`.
 - Eventos con `addEventListener`. Nada de `onclick` en el HTML.
 - Para pintar datos del usuario, `textContent` o `createElement`, no `innerHTML`.
-- Cada `fetch` dentro de `try/catch`, y el error se enseña con una alerta de Bootstrap.
+- Las peticiones a la API se hacen siempre con `pedirApi(url, { metodo, datos })` de `comun.js`, dentro de `try/catch`. Si el servidor contesta con error, `pedirApi` ya enseña su mensaje con una alerta de Bootstrap y lanza el error; en el `catch` la página solo deshace lo suyo (volver a activar un botón, por ejemplo).
 
 ## 5. Formularios
 
@@ -105,6 +105,11 @@ Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dej
 
 Respuestas en JSON. Errores con la forma `{ "error": "mensaje" }`.
 Códigos: 200/201 ok, 400 datos mal, 401 sin sesión, 403 sin permiso, 404 no existe, 409 rompe una regla de negocio.
+
+- `routes/index.js` monta cada recurso bajo `/api` con una línea: `router.use('/cursos', require('./cursos'))`.
+- Para contestar un error se lanza `throw errorHttp(409, 'No quedan plazas en este curso.')` (de `middlewares/errores.js`). El middleware de errores, el último de `index.js`, lo convierte en `{ "error": "..." }` con ese código. Cualquier otro error (MariaDB, un fallo del código) sale en la terminal y el usuario solo ve un 500 con un mensaje general.
+- Una ruta que no existe contesta 404 en JSON.
+- Express 4 no recoge solo los errores de las funciones `async`: cada ruta lleva `try { ... } catch (error) { next(error); }`.
 
 | Recurso | Endpoints | Quién |
 |---|---|---|

@@ -6,9 +6,7 @@
     "private": true,
     "scripts": {
         "start": "node --env-file=.env index.js",
-        "dev": "nodemon --exec \"node --env-file=.env\" index.js",
-        "cursos": "node listar-cursos.js",
-        "datos": "node --env-file=.env db/cargar-datos.js"
+        "dev": "nodemon --exec \"node --env-file=.env\" index.js"
     },
     "dependencies": {
         "bcryptjs": "^3.0.3",

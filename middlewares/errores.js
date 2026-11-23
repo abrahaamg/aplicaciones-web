@@ -12,9 +12,19 @@ function errorHttp(estado, mensaje) {
 // Los errores sin código (un fallo de MariaDB, un error de programación) son un 500: el detalle
 // sale en la terminal y el usuario solo ve un mensaje general.
 function manejarErrores(error, req, res, next) {
+    // Si la respuesta ya se empezó a mandar no se puede mandar otra: Express corta la conexión
+    if (res.headersSent) {
+        return next(error);
+    }
+
     // express.json() no ha podido leer el cuerpo de la petición
     if (error.type === 'entity.parse.failed') {
         return res.status(400).json({ error: 'Los datos enviados no son un JSON válido.' });
+    }
+
+    // express.json() no acepta cuerpos de más de 100 KB
+    if (error.type === 'entity.too.large') {
+        return res.status(413).json({ error: 'Los datos enviados son demasiado grandes.' });
     }
 
     if (!error.estado || error.estado >= 500) {

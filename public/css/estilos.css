@@ -97,9 +97,15 @@ a {
     text-align: center;
 }
 
-/* Separación entre los dos botones solo con el menú en línea; en el móvil van uno debajo de otro */
+/* Separación entre los dos botones: con el menú en línea van uno al lado del otro,
+   en el móvil uno debajo de otro */
+.navbar-centro .btn-registro {
+    margin-bottom: 0.5rem;
+}
+
 @media (min-width: 1200px) {
     .navbar-centro .btn-registro {
+        margin-bottom: 0;
         margin-left: 0.75rem;
     }
 }

@@ -44,9 +44,9 @@ Sigue la plantilla del profe (`recurso-bootstrap`): el código del servidor va e
 
 ### Usuarios de prueba
 
-Los carga `db/aw_datos.sql`, junto con más alumnos, docentes, aulas, cursos y matrículas inventados. Todos tienen la contraseña `Admin1234`, guardada con hash.
+Los carga `db/aw_datos.sql`, el fichero de datos oficial del profe, junto con 12 docentes, 8 aulas, 8 cursos y 20 matrículas. Todos los usuarios tienen la contraseña `Aula2026!`.
 
 | Rol | Correo |
 |---|---|
-| Administración | `admin@example.com` |
-| Alumno | `alumno@example.com` |
+| Administración | `laura.mendez@cforma.test` |
+| Alumno | `daniel.ruiz@cforma.test` |

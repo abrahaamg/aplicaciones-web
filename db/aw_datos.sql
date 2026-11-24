@@ -1,80 +1,113 @@
--- Datos de prueba del grupo. Todos son inventados.
--- Se importa después de aw_practica.sql, sobre la base recién creada:
--- phpMyAdmin, base aw_practica, pestaña Importar.
--- Todos los usuarios tienen la contraseña Admin1234, guardada con hash de bcryptjs.
--- Hay tantos docentes, alumnos, aulas y cursos como imágenes en public/img/ (12, 12, 8 y 8).
--- docentes.foto y cursos.imagen guardan la ruta de la imagen dentro de public/.
+-- ===============================================================
+-- APLICACIONES WEB · UCM · Curso 2026-2027
+-- Centro de Formación · DATOS INICIALES OFICIALES (aw_datos.sql)
+-- ===============================================================
+-- IMPORTANTE: ejecutar aw_practica.sql ANTES de este archivo.
+-- Pensado para una base de datos nueva, sin registros anteriores.
+-- No modifica el esquema ni crea tablas adicionales.
+-- IMPORTAR UNA SOLA VEZ: una segunda ejecución dará conflictos PK/UNIQUE.
+-- Si ya tienes datos, haz copia antes de reinicializar el entorno.
+-- Las cuentas y contraseñas son SOLO de demostración local.
+-- Todos los usuarios de ejemplo: contrasena Aula2026! (TEXTO CLARO).
+-- No reutilizar estas credenciales en sistemas reales ni públicos.
+-- Foto de docente N: img/docentes/docenteNN.png
+-- Imagen de curso N: img/cursos/cursoNN.png
+-- Las imágenes se obtienen recortando los tableros asset_* con Asset Splitter.
+-- Las tablas usuarios y aulas NO disponen de un campo de imagen.
+-- El campo cursos.imagen/docentes.foto conserva SOLO la ruta relativa.
+-- ===============================================================
 
 USE aw_practica;
+SET NAMES utf8mb4;
+START TRANSACTION;
 
--- 1. USUARIOS (1 administrador y 12 alumnos; el último está desactivado)
-INSERT INTO usuarios (id_usuario, nombre, email, password, rol, activo) VALUES
-    (1, 'Admin Centro', 'admin@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'admin', TRUE),
-    (2, 'Hugo Martín Díaz', 'alumno@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (3, 'Paula Sánchez Romero', 'paula.sanchez@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (4, 'Diego Ramírez Torres', 'diego.ramirez@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (5, 'Claudia Morales Vega', 'claudia.morales@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (6, 'Sofía Castro Núñez', 'sofia.castro@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (7, 'Mario Gil Herrera', 'mario.gil@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (8, 'Irene Domínguez Peña', 'irene.dominguez@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (9, 'Adrián Vázquez Ruiz', 'adrian.vazquez@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (10, 'Álvaro Reyes Molina', 'alvaro.reyes@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (11, 'Lucía Fernández Gil', 'lucia.fernandez@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (12, 'Daniel Ortiz Blanco', 'daniel.ortiz@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', TRUE),
-    (13, 'Carla Jiménez Rubio', 'carla.jimenez@example.com', '$2b$10$Y7OAsfQS7Xta2AWsQn34hehxjTfSZoDBk0opsIQVqS78BzVfIXDvO', 'alumno', FALSE);
+-- 1. USUARIOS: 2 administradores y 12 alumnos (claves en texto claro SOLO para el laboratorio)
+INSERT INTO usuarios (id_usuario, nombre, email, password, rol, fecha_registro, activo) VALUES
+(1, 'Laura Méndez', 'laura.mendez@cforma.test', 'Aula2026!', 'admin', '2026-11-01 10:00:00', 1),
+(2, 'Carlos Ortega', 'carlos.ortega@cforma.test', 'Aula2026!', 'admin', '2026-11-01 10:00:00', 1),
+(101, 'Daniel Ruiz', 'daniel.ruiz@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(102, 'Lucía Torres', 'lucia.torres@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(103, 'Sergio Martín', 'sergio.martin@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(104, 'Nuria Morales', 'nuria.morales@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(105, 'Hugo Romero', 'hugo.romero@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(106, 'Marta Castro', 'marta.castro@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(107, 'Sara Jiménez', 'sara.jimenez@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(108, 'Álvaro Díaz', 'alvaro.diaz@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(109, 'Claudia López', 'claudia.lopez@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(110, 'David Molina', 'david.molina@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(111, 'Elena Navarro', 'elena.navarro@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1),
+(112, 'Pablo Prieto', 'pablo.prieto@cforma.test', 'Aula2026!', 'alumno', '2026-11-02 10:00:00', 1);
 
--- 2. DOCENTES (uno por foto; el 10 está desactivado)
+-- 2. DOCENTES: foto según posición del tablero asset_docentes.png
 INSERT INTO docentes (id_docente, nombre, email, especialidad, telefono, foto, activo) VALUES
-    (1, 'Javier Ortega Ruiz', 'javier.ortega@example.com', 'Desarrollo web', '910000001', 'img/docentes/docente_01.png', TRUE),
-    (2, 'Laura Gómez Prieto', 'laura.gomez@example.com', 'Bases de datos', '910000002', 'img/docentes/docente_02.png', TRUE),
-    (3, 'Antonio Delgado Mora', 'antonio.delgado@example.com', 'Ofimática', NULL, 'img/docentes/docente_03.png', TRUE),
-    (4, 'Elena Vidal Campos', 'elena.vidal@example.com', 'Diseño gráfico', '910000004', 'img/docentes/docente_04.png', TRUE),
-    (5, 'Carmen Molina Herrero', 'carmen.molina@example.com', 'Análisis de datos', '910000005', 'img/docentes/docente_05.png', TRUE),
-    (6, 'Daniel Romero Gil', 'daniel.romero@example.com', 'Ciberseguridad', NULL, 'img/docentes/docente_06.png', TRUE),
-    (7, 'Marta Serrano Ibáñez', 'marta.serrano@example.com', 'Inteligencia artificial', '910000007', 'img/docentes/docente_07.png', TRUE),
-    (8, 'Andrés Navarro Soto', 'andres.navarro@example.com', 'Programación', '910000008', 'img/docentes/docente_08.png', TRUE),
-    (9, 'Lucía Herrera Campos', 'lucia.herrera@example.com', 'Marketing digital', '910000009', 'img/docentes/docente_09.png', TRUE),
-    (10, 'José Luis Castillo León', 'joseluis.castillo@example.com', 'Redes y sistemas', NULL, 'img/docentes/docente_10.png', FALSE),
-    (11, 'Raquel Fuentes Vega', 'raquel.fuentes@example.com', 'Accesibilidad web', '910000011', 'img/docentes/docente_11.png', TRUE),
-    (12, 'Sergio Cano Medina', 'sergio.cano@example.com', 'Bases de datos', '910000012', 'img/docentes/docente_12.png', TRUE);
+(1, 'Miguel García', 'miguel.garcia@cforma.test', 'Desarrollo web', '600 001 101', 'img/docentes/docente01.png', 1),
+(2, 'Ana López', 'ana.lopez@cforma.test', 'Bases de datos', '600 002 102', 'img/docentes/docente02.png', 1),
+(3, 'Javier Ramos', 'javier.ramos@cforma.test', 'Ciberseguridad', '600 003 103', 'img/docentes/docente03.png', 1),
+(4, 'Elena Salas', 'elena.salas@cforma.test', 'Análisis de datos', '600 004 104', 'img/docentes/docente04.png', 1),
+(5, 'Carmen Soto', 'carmen.soto@cforma.test', 'Inteligencia artificial', '600 005 105', 'img/docentes/docente05.png', 1),
+(6, 'David Martín', 'david.martin@cforma.test', 'Marketing digital', '600 006 106', 'img/docentes/docente06.png', 1),
+(7, 'Beatriz Vega', 'beatriz.vega@cforma.test', 'Diseño gráfico', '600 007 107', 'img/docentes/docente07.png', 1),
+(8, 'Luis Moreno', 'luis.moreno@cforma.test', 'Ofimática', '600 008 108', 'img/docentes/docente08.png', 1),
+(9, 'Marta Ibáñez', 'marta.ibanez@cforma.test', 'Programación Python', '600 009 109', 'img/docentes/docente09.png', 1),
+(10, 'Andrés Pérez', 'andres.perez@cforma.test', 'Sistemas informáticos', '600 010 110', 'img/docentes/docente10.png', 1),
+(11, 'Natalia Cruz', 'natalia.cruz@cforma.test', 'Gestión de proyectos', '600 011 111', 'img/docentes/docente11.png', 1),
+(12, 'Óscar Gil', 'oscar.gil@cforma.test', 'Accesibilidad web', '600 012 112', 'img/docentes/docente12.png', 1);
 
--- 3. AULAS (una por foto de img/aulas/, en el mismo orden; la sala de estudio está inactiva)
+-- 3. AULAS (las imágenes de aula son recursos estáticos opcionales)
 INSERT INTO aulas (id_aula, nombre, edificio, planta, capacidad, equipamiento, estado) VALUES
-    (1, 'Aula 1.01', 'Principal', 'Primera', 30, 'Pantalla interactiva y pizarra blanca', 'activa'),
-    (2, 'Laboratorio de informática', 'Principal', 'Baja', 24, '24 ordenadores y proyector', 'activa'),
-    (3, 'Sala de seminarios', 'Anexo', 'Primera', 20, 'Proyector, rotafolio y sillas con pala', 'activa'),
-    (4, 'Taller', 'Anexo', 'Baja', 12, 'Banco de trabajo y herramientas', 'activa'),
-    (5, 'Aula colaborativa', 'Principal', 'Segunda', 28, 'Mesas en grupo y pantalla interactiva', 'activa'),
-    (6, 'Salón de actos', 'Principal', 'Baja', 80, 'Proyector, micrófonos y atril', 'activa'),
-    (7, 'Sala de estudio', 'Biblioteca', 'Primera', 16, 'Estanterías y mesas individuales', 'inactiva'),
-    (8, 'Laboratorio de ciencias', 'Anexo', 'Segunda', 14, 'Microscopios y material de laboratorio', 'activa');
+(1, 'Aula 101', 'Edificio A', '1', 30, 'Proyector, pizarra, wifi', 'activa'),
+(2, 'Aula TIC 201', 'Edificio A', '2', 24, '24 ordenadores, proyector, wifi', 'activa'),
+(3, 'Sala de seminarios', 'Edificio B', '0', 18, 'Pantalla, videoconferencia', 'activa'),
+(4, 'Taller 1', 'Edificio B', '1', 20, 'Equipamiento de taller, mesas de trabajo', 'activa'),
+(5, 'Aula colaborativa', 'Edificio C', '1', 28, 'Mesas móviles, panel digital', 'activa'),
+(6, 'Salón de actos', 'Edificio C', '0', 80, 'Proyección, sonido, micrófonos', 'activa'),
+(7, 'Aula 302', 'Edificio A', '3', 25, 'Proyector, wifi', 'activa'),
+(8, 'Laboratorio 2', 'Edificio B', '2', 16, 'Puestos de prácticas, material de laboratorio', 'inactiva');
 
--- 4. CURSOS (uno por imagen; el 2 tiene 3 plazas y está lleno, el 7 y el 8 están inactivos)
+-- 4. CURSOS: imagen según posición del tablero asset_cursos.png
 INSERT INTO cursos (id_curso, id_docente, id_aula, nombre, descripcion, fecha_inicio, fecha_fin, horario, plazas, imagen, estado) VALUES
-    (1, 1, 2, 'Desarrollo web con HTML, CSS y JavaScript', 'Páginas que se adaptan al móvil, con estilos propios y algo de interacción.', '2026-12-01', '2027-01-29', 'Lunes y miércoles, 16:00 a 18:00', 20, 'img/cursos/curso_01.png', 'activo'),
-    (2, 2, 2, 'Bases de datos con MariaDB', 'Tablas, relaciones y consultas SQL desde cero.', '2027-01-11', '2027-02-12', 'Viernes, 09:00 a 13:00', 3, 'img/cursos/curso_02.png', 'activo'),
-    (3, 6, 6, 'Ciberseguridad básica', 'Contraseñas, copias de seguridad y cómo detectar fraudes por correo.', '2027-01-18', '2027-02-26', 'Miércoles, 10:00 a 13:00', 60, 'img/cursos/curso_03.png', 'activo'),
-    (4, 5, 5, 'Análisis de datos con Python', 'Leer, limpiar y representar datos en gráficos.', '2027-02-08', '2027-04-02', 'Lunes, 16:00 a 19:00', 25, 'img/cursos/curso_04.png', 'activo'),
-    (5, 7, 1, 'Introducción a la inteligencia artificial', 'Qué es un modelo, cómo aprende y para qué se usa.', '2027-03-01', '2027-04-30', 'Jueves, 16:00 a 19:00', 30, 'img/cursos/curso_05.png', 'activo'),
-    (6, 9, 3, 'Marketing digital y redes sociales', 'Campañas, contenidos y cómo medir sus resultados.', '2027-02-15', '2027-03-26', 'Martes y jueves, 10:00 a 12:00', 20, 'img/cursos/curso_06.png', 'activo'),
-    (7, 4, 5, 'Diseño gráfico digital', 'Color, tipografía y composición con herramientas digitales.', '2026-09-14', '2026-10-30', 'Martes, 16:00 a 19:00', 20, 'img/cursos/curso_07.png', 'inactivo'),
-    (8, 3, 7, 'Ofimática para el día a día', 'Documentos, hojas de cálculo y presentaciones.', '2027-04-05', '2027-05-14', 'Miércoles, 18:00 a 20:00', 16, 'img/cursos/curso_08.png', 'inactivo');
+(1, 1, 2, 'Desarrollo web con JavaScript', 'HTML, CSS, JavaScript y aplicaciones web interactivas.', '2027-01-11', '2027-03-12', 'Lunes y miércoles 17:00-19:00', 20, 'img/cursos/curso01.png', 'activo'),
+(2, 2, 1, 'Bases de datos relacionales', 'Modelado relacional, SQL y MariaDB.', '2027-01-18', '2027-03-19', 'Martes y jueves 17:00-19:00', 22, 'img/cursos/curso02.png', 'activo'),
+(3, 3, 3, 'Fundamentos de ciberseguridad', 'Amenazas comunes, controles y seguridad web.', '2027-02-01', '2027-04-16', 'Viernes 16:00-19:00', 15, 'img/cursos/curso03.png', 'activo'),
+(4, 4, 5, 'Análisis de datos', 'Preparación, análisis y visualización de datos.', '2027-02-08', '2027-04-30', 'Lunes y miércoles 18:00-20:00', 24, 'img/cursos/curso04.png', 'activo'),
+(5, 5, 6, 'Introducción a la inteligencia artificial', 'Conceptos, herramientas y casos de uso responsables.', '2027-03-01', '2027-05-07', 'Martes 16:00-19:00', 40, 'img/cursos/curso05.png', 'activo'),
+(6, 6, 7, 'Marketing digital', 'Estrategia de contenidos y medición de campañas.', '2027-03-08', '2027-05-21', 'Jueves 17:00-19:00', 20, 'img/cursos/curso06.png', 'activo'),
+(7, 7, 4, 'Diseño gráfico digital', 'Principios visuales y herramientas de diseño.', '2027-04-05', '2027-06-04', 'Miércoles 16:00-19:00', 18, 'img/cursos/curso07.png', 'activo'),
+(8, 8, 1, 'Herramientas de ofimática', 'Documentos, hojas de cálculo y presentaciones.', '2027-01-25', '2027-03-26', 'Viernes 16:00-18:00', 25, 'img/cursos/curso08.png', 'inactivo');
 
--- 5. MATRICULAS
+-- 5. MATRÍCULAS: incluye activas y canceladas para probar filtros y reactivación
 INSERT INTO matriculas (id_matricula, id_usuario, id_curso, fecha_matricula, estado) VALUES
-    (1, 2, 1, '2026-11-02 10:15:00', 'activa'),
-    (2, 2, 2, '2026-11-10 18:40:00', 'activa'),
-    (3, 2, 7, '2026-09-01 12:00:00', 'cancelada'),
-    (4, 3, 2, '2026-11-11 09:30:00', 'activa'),
-    (5, 4, 2, '2026-11-12 17:05:00', 'activa'),
-    (6, 5, 2, '2026-11-09 16:45:00', 'cancelada'),
-    (7, 3, 1, '2026-11-03 10:10:00', 'activa'),
-    (8, 5, 3, '2026-11-14 20:30:00', 'activa'),
-    (9, 6, 4, '2026-11-15 13:00:00', 'activa'),
-    (10, 7, 5, '2026-11-16 19:25:00', 'activa'),
-    (11, 8, 6, '2026-11-17 11:20:00', 'activa'),
-    (12, 9, 1, '2026-11-05 08:50:00', 'cancelada'),
-    (13, 10, 3, '2026-11-18 12:35:00', 'activa'),
-    (14, 11, 7, '2026-09-10 09:00:00', 'activa'),
-    (15, 12, 5, '2026-11-19 17:40:00', 'activa'),
-    (16, 13, 1, '2026-11-01 12:35:00', 'activa');
+(1, 101, 1, '2026-11-05 10:00:00', 'activa'),
+(2, 102, 1, '2026-11-05 10:15:00', 'activa'),
+(3, 103, 1, '2026-11-06 09:00:00', 'cancelada'),
+(4, 104, 1, '2026-11-06 09:30:00', 'activa'),
+(5, 101, 2, '2026-11-07 11:00:00', 'activa'),
+(6, 105, 2, '2026-11-07 12:00:00', 'activa'),
+(7, 106, 2, '2026-11-08 08:30:00', 'cancelada'),
+(8, 102, 3, '2026-11-08 11:30:00', 'activa'),
+(9, 107, 3, '2026-11-08 12:00:00', 'activa'),
+(10, 108, 3, '2026-11-09 14:00:00', 'activa'),
+(11, 103, 4, '2026-11-09 15:00:00', 'activa'),
+(12, 109, 4, '2026-11-10 10:00:00', 'activa'),
+(13, 110, 4, '2026-11-10 10:10:00', 'cancelada'),
+(14, 104, 5, '2026-11-11 09:00:00', 'activa'),
+(15, 111, 5, '2026-11-11 09:20:00', 'activa'),
+(16, 112, 5, '2026-11-11 09:40:00', 'activa'),
+(17, 105, 6, '2026-11-12 10:00:00', 'activa'),
+(18, 106, 6, '2026-11-12 10:15:00', 'activa'),
+(19, 107, 7, '2026-11-13 11:00:00', 'activa'),
+(20, 108, 7, '2026-11-13 12:00:00', 'cancelada');
+
+COMMIT;
+
+-- CONSULTAS DE COMPROBACIÓN (opcionales):
+SELECT COUNT(*) AS usuarios FROM usuarios;
+SELECT COUNT(*) AS docentes FROM docentes;
+SELECT COUNT(*) AS aulas FROM aulas;
+SELECT COUNT(*) AS cursos FROM cursos;
+SELECT COUNT(*) AS matriculas FROM matriculas;
+
+-- Para probar reactivación: matrícula id=3, alumno 103 y curso 1.
+-- El backend deberá verificar plazas, permisos y curso activo antes del UPDATE.
+-- UPDATE matriculas SET estado = 'activa', fecha_matricula = NOW()
+-- WHERE id_matricula = 3 AND estado = 'cancelada';

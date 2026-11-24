@@ -24,7 +24,7 @@ aplicaciones-web/
     ├── css/              bootstrap.min.css, bootstrap-icons.min.css, fonts/, estilos.css
     ├── components/       navbar.html y footer.html, escritos una sola vez
     ├── js/               bootstrap.bundle.min.js, comun.js, components.js, un JS por página
-    └── img/              logo, cursos/, docentes/
+    └── img/              logos, banner, favicon e iconos/, docentes/, alumnos/, aulas/, cursos/ (recortes de Asset Splitter)
 ```
 
 Las carpetas marcadas `[bloque backend]` **no se crean hasta que toque**. No dejamos ficheros vacíos.

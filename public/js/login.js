@@ -1,29 +1,26 @@
-// Inicio de sesión de prueba. Los usuarios están escritos aquí hasta que haya
-// servidor y base de datos (microhito 3); entonces se comprobará en POST /api/auth/login.
-
-const USUARIOS_PRUEBA = [
-    { correo: 'admin@example.com', clave: 'admin123', nombre: 'Administración', rol: 'admin' },
-    { correo: 'alumno@example.com', clave: 'alumno123', nombre: 'Alumno de prueba', rol: 'alumno' }
-];
+// Se comprueba el correo y la contraseña en POST /api/auth/login y se guarda la sesión
 
 const formularioLogin = document.getElementById('formulario-login');
+const botonEntrar = formularioLogin.querySelector('button[type="submit"]');
 
 // Página a la que volver después de entrar (?volver=admin.html). Solo se acepta el nombre
-// de una página de la web, para no mandar a nadie a otro sitio.
+// de una página de la web, para no mandar a nadie a otro sitio. Devuelve null si no hay.
 function paginaDeVuelta() {
     const volver = new URLSearchParams(location.search).get('volver');
     if (volver && /^[\w-]+\.html$/.test(volver) && volver !== 'login.html') {
         return volver;
     }
-    return 'index.html';
+    return null;
 }
 
 // Con la sesión ya iniciada no tiene sentido el login
-if (leerSesion() !== null) {
-    location.replace(paginaDeVuelta());
-}
+sincronizarSesion().then(function (usuario) {
+    if (usuario) {
+        location.replace(paginaDeVuelta() || 'index.html');
+    }
+});
 
-formularioLogin.addEventListener('submit', function (event) {
+formularioLogin.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     const correo = document.getElementById('correo');
@@ -33,18 +30,17 @@ formularioLogin.addEventListener('submit', function (event) {
     clave.classList.toggle('is-invalid', clave.value === '');
     if (!correo.checkValidity() || clave.value === '') return;
 
-    const usuario = USUARIOS_PRUEBA.find(function (u) {
-        return u.correo === correo.value.trim().toLowerCase() && u.clave === clave.value;
-    });
-
-    if (!usuario) {
-        mostrarAlerta('El correo o la contraseña no son correctos.');
-        return;
-    }
-
-    if (iniciarSesion(usuario)) {
-        location.href = paginaDeVuelta();
-    } else {
-        mostrarAlerta('No se pudo iniciar la sesión. Inténtalo de nuevo.');
+    botonEntrar.disabled = true;
+    try {
+        const respuesta = await pedirApi('/api/auth/login', {
+            metodo: 'POST',
+            datos: { correo: correo.value.trim(), clave: clave.value }
+        });
+        iniciarSesion(respuesta.usuario);
+        location.href = paginaDeVuelta() || respuesta.destino;
+    } catch {
+        clave.value = '';
+        clave.focus();
+        botonEntrar.disabled = false;
     }
 });

@@ -24,12 +24,12 @@ function crearTarjetaVacia() {
     return { columna, cuerpo };
 }
 
-function crearListaCursos(titulo, cursos) {
+function crearListaCursos(titulo, cursos, textoSinCursos) {
     const bloque = document.createElement('div');
     bloque.appendChild(crearElementoListado('h3', 'h6 mb-1', titulo));
 
     if (cursos.length === 0) {
-        bloque.appendChild(crearElementoListado('p', 'card-text text-muted mb-0', 'Ningún curso asignado'));
+        bloque.appendChild(crearElementoListado('p', 'card-text text-muted mb-0', textoSinCursos));
         return bloque;
     }
 
@@ -68,56 +68,81 @@ function crearTarjetaAula(aula) {
     });
     cuerpo.appendChild(datos);
 
-    cuerpo.appendChild(crearListaCursos('Cursos en esta aula', aula.cursos));
+    cuerpo.appendChild(crearListaCursos('Cursos en esta aula', aula.cursos, 'Ningún curso asignado'));
     return columna;
 }
 
-function crearTarjetaDocente(docente, cursos) {
+function crearTarjetaDocente(docente) {
     const { columna, cuerpo } = crearTarjetaVacia();
-    cuerpo.appendChild(crearElementoListado('h2', 'card-title h5', docente.nombre + ' ' + docente.apellidos));
-    cuerpo.appendChild(crearListaCursos('Cursos que imparte', cursos));
+
+    const cabecera = crearElementoListado('div', 'd-flex align-items-center gap-3 mb-2', '');
+    cabecera.appendChild(crearFotoDocente(docente));
+    const nombre = crearElementoListado('div', 'flex-grow-1', '');
+    nombre.appendChild(crearElementoListado('h2', 'card-title h5 mb-0', docente.nombre));
+    nombre.appendChild(crearElementoListado('p', 'text-muted small mb-0', docente.especialidad));
+    cabecera.appendChild(nombre);
+    cabecera.appendChild(docente.activo
+        ? crearElementoListado('span', 'badge bg-success align-self-start', 'Activo')
+        : crearElementoListado('span', 'badge bg-secondary align-self-start', 'Inactivo'));
+    cuerpo.appendChild(cabecera);
+
+    const contacto = crearElementoListado('ul', 'list-unstyled small mb-2', '');
+    contacto.appendChild(crearDatoContacto('bi-envelope', docente.email));
+    if (docente.telefono) {
+        contacto.appendChild(crearDatoContacto('bi-telephone', docente.telefono));
+    }
+    cuerpo.appendChild(contacto);
+
+    cuerpo.appendChild(crearListaCursos('Cursos que imparte', docente.cursos, 'No imparte ningún curso'));
     return columna;
 }
 
-// GET /api/aulas trae los cursos de cada una
-async function mostrarAulas() {
-    mostrarMensajeListado('Cargando aulas…');
+// Sin foto sale el tipico icono de persona
+function crearFotoDocente(docente) {
+    const icono = crearElementoListado('i', 'bi bi-person-circle fs-1 text-secondary', '');
+    icono.setAttribute('aria-hidden', 'true');
+    if (!docente.foto) {
+        return icono;
+    }
 
-    let aulas;
+    const foto = crearElementoListado('img', 'rounded-circle foto-docente', '');
+    foto.src = docente.foto;
+    foto.alt = 'Foto de ' + docente.nombre;
+    foto.addEventListener('error', function () {
+        foto.replaceWith(icono);
+    });
+    return foto;
+}
+
+function crearDatoContacto(icono, texto) {
+    const elemento = crearElementoListado('li', 'text-break', '');
+    const simbolo = crearElementoListado('i', 'bi ' + icono + ' me-1', '');
+    simbolo.setAttribute('aria-hidden', 'true');
+    elemento.append(simbolo, texto);
+    return elemento;
+}
+
+async function mostrarListado(url, textos, crearTarjeta) {
+    mostrarMensajeListado(textos.cargando);
+
+    let elementos;
     try {
-        aulas = await pedirApi('/api/aulas');
+        elementos = await pedirApi(url);
     } catch {
         contenedorListado.replaceChildren();
         return;
     }
 
-    if (aulas.length === 0) {
-        mostrarMensajeListado('Todavía no hay aulas.');
+    if (elementos.length === 0) {
+        mostrarMensajeListado(textos.vacio);
         return;
     }
 
-    contenedorListado.replaceChildren(...aulas.map(crearTarjetaAula));
-}
-
-// Docentes todavía con los datos provisionales de datos.js
-function mostrarDocentes() {
-    let cursos;
-    try {
-        cursos = cargarCursos();
-    } catch {
-        mostrarAlerta('No se han podido cargar los cursos. Recarga la página para intentarlo de nuevo.');
-        return;
-    }
-
-    DOCENTES.forEach(function (docente) {
-        contenedorListado.appendChild(crearTarjetaDocente(docente, cursos.filter(function (curso) {
-            return Number(curso.id_docente) === docente.id_docente;
-        })));
-    });
+    contenedorListado.replaceChildren(...elementos.map(crearTarjeta));
 }
 
 if (contenedorListado.dataset.listado === 'docentes') {
-    mostrarDocentes();
+    mostrarListado('/api/docentes', { cargando: 'Cargando docentes…', vacio: 'Todavía no hay docentes.' }, crearTarjetaDocente);
 } else {
-    mostrarAulas();
+    mostrarListado('/api/aulas', { cargando: 'Cargando aulas…', vacio: 'Todavía no hay aulas.' }, crearTarjetaAula);
 }

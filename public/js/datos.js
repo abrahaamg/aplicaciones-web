@@ -3,8 +3,7 @@
 
 const CLAVE_CURSOS = 'cursos';
 
-// Provisionales: el profe dará los JSON reales de docentes y aulas en el bloque de backend.
-// Un curso guarda solo el id (id_docente, id_aula); con estas listas se saca el nombre.
+// docentes.html ya los pide al servidor, cuando se actualicen todos los js se podran borrar
 const DOCENTES = [
     { id_docente: 1, nombre: 'Laura', apellidos: 'Gómez Ruiz' },
     { id_docente: 2, nombre: 'Marcos', apellidos: 'Peña Soler' },

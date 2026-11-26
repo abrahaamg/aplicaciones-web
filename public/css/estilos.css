@@ -300,3 +300,11 @@ a {
     border-color: var(--color-principal);
     color: #ffffff;
 }
+
+/* Docentes */
+
+.foto-docente {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+}

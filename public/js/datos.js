@@ -11,6 +11,7 @@ const DOCENTES = [
     { id_docente: 3, nombre: 'Elena', apellidos: 'Vidal Mora' }
 ];
 
+// aulas.html ya las pide al servidor, cuando se actualicen todos los js se podran borrar
 const AULAS = [
     { id_aula: 1, nombre: 'Aula 1' },
     { id_aula: 2, nombre: 'Aula 2' },

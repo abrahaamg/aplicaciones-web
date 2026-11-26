@@ -54,14 +54,24 @@ function mostrarEnlacesDeSesion() {
             elemento.classList.toggle('d-none', !visible);
         });
     });
+}
 
+// Cierra sesion en el servidor y la copia del navegador
+function prepararCerrarSesion() {
     const botonCerrarSesion = document.getElementById('boton-cerrar-sesion');
-    if (botonCerrarSesion) {
-        botonCerrarSesion.addEventListener('click', function () {
-            cerrarSesion();
-            location.href = 'index.html';
-        });
-    }
+    if (!botonCerrarSesion) return;
+
+    botonCerrarSesion.addEventListener('click', async function () {
+        botonCerrarSesion.disabled = true;
+        try {
+            await pedirApi('/api/auth/logout', { metodo: 'POST' });
+        } catch {
+            botonCerrarSesion.disabled = false;
+            return;
+        }
+        cerrarSesion();
+        location.href = 'index.html';
+    });
 }
 
 // Modo desarrollo: se enciende con ?dev=1 en la dirección y se apaga con ?dev=0.
@@ -81,9 +91,12 @@ function cargarModoDev() {
     document.body.append(script);
 }
 
-cargarComponente('navbar', 'components/navbar.html').then(function (cargado) {
+cargarComponente('navbar', 'components/navbar.html').then(async function (cargado) {
     if (!cargado) return;
     marcarPaginaActual();
+    mostrarEnlacesDeSesion();
+    prepararCerrarSesion();
+    await sincronizarSesion();
     mostrarEnlacesDeSesion();
 });
 cargarComponente('footer', 'components/footer.html');

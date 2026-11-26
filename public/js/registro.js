@@ -1,12 +1,15 @@
-// Registro de alumnos. Hasta que haya servidor no se guarda el usuario:
-// al registrarse se inicia la sesión con sus datos y se vuelve a la portada.
+// Registro de alumnos: el servidor vuelve a validar los datos
+// Guarda al alumno en POST /api/auth/registro con la contraseña cifrada y deja la sesión iniciada
 
-// Con la sesión ya iniciada no tiene sentido registrarse otra vez
-if (leerSesion() !== null) {
-    location.replace('index.html');
-}
+// Con la sesión ya iniciada no te puedes registrar otra vez
+sincronizarSesion().then(function (usuario) {
+    if (usuario) {
+        location.replace('index.html');
+    }
+});
 
 const formRegistro = document.getElementById('formulario-registro');
+const botonRegistrarse = formRegistro.querySelector('button[type="submit"]');
 const nombre = document.getElementById('nombre');
 const apellidos = document.getElementById('apellidos');
 const email = document.getElementById('email');
@@ -70,7 +73,7 @@ password.addEventListener('input', () => {
     }
 });
 
-formRegistro.addEventListener('submit', function (event) {
+formRegistro.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     // Se validan todos para marcar a la vez todos los campos con error
@@ -85,15 +88,23 @@ formRegistro.addEventListener('submit', function (event) {
         return;
     }
 
-    const sesionIniciada = iniciarSesion({
-        correo: email.value.trim().toLowerCase(),
-        nombre: nombre.value.trim() + ' ' + apellidos.value.trim(),
-        rol: 'alumno'
-    });
+    // Desactivado mientras se envía, para no crear la cuenta dos veces
+    botonRegistrarse.disabled = true;
+    try {
+        const respuesta = await pedirApi('/api/auth/registro', {
+            metodo: 'POST',
+            datos: {
+                nombre: nombre.value.trim(),
+                apellidos: apellidos.value.trim(),
+                email: email.value.trim(),
+                password: password.value,
+                confirm_password: confirmPassword.value
+            }
+        });
 
-    if (sesionIniciada) {
-        location.href = 'index.html';
-    } else {
-        mostrarAlerta('No se pudo iniciar la sesión. Inténtalo de nuevo.');
+        iniciarSesion(respuesta.usuario);
+        location.href = respuesta.destino;
+    } catch {
+        botonRegistrarse.disabled = false;
     }
 });

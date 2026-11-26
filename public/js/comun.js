@@ -2,7 +2,8 @@
 // y antes del JS propio de cada página.
 
 const CLAVE_PREFERENCIAS = 'preferencias';
-// El inicio de sesión guarda aquí al usuario; al cerrar sesión se borra
+// Copia de la sesión del servidor ({ correo, nombre, rol }) para pintar el menú sin esperar.
+// Solo sirve para enseñar u ocultar cosas: quien decide de verdad es la sesión del servidor.
 const CLAVE_SESION = 'sesion';
 
 // Usuario con la sesión iniciada ({ correo, nombre, rol }) o null si no hay nadie
@@ -55,6 +56,25 @@ function cerrarSesion() {
         localStorage.removeItem(CLAVE_SESION);
     } catch (error) {
         console.error('No se pudo cerrar la sesión', error);
+    }
+}
+
+// Pregunta al servidor quien tiene la sesion iniciada y actualiza localStorage
+async function sincronizarSesion() {
+    try {
+        const respuesta = await fetch('/api/auth/sesion', { headers: { Accept: 'application/json' } });
+        if (!respuesta.ok) {
+            return leerSesion();
+        }
+        const { usuario } = await respuesta.json();
+        if (usuario) {
+            iniciarSesion(usuario);
+        } else {
+            cerrarSesion();
+        }
+        return usuario;
+    } catch {
+        return leerSesion();
     }
 }
 

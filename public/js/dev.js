@@ -1,14 +1,24 @@
 // Panel del modo desarrollo: atajos para probar sin pasar por los formularios.
 // Solo se carga si el modo está encendido (ver cargarModoDev en js/components.js).
 
+// Entra de verdad con un usuario de db/aw_datos.sql (la contraseña de todos está en el README)
+async function entrarComo(correo) {
+    const respuesta = await pedirApi('/api/auth/login', {
+        metodo: 'POST',
+        datos: { correo, clave: 'Aula2026!' }
+    });
+    iniciarSesion(respuesta.usuario);
+}
+
 const ATAJOS_DEV = [
     ['Entrar como admin', function () {
-        iniciarSesion({ correo: 'admin@example.com', nombre: 'Administración', rol: 'admin' });
+        return entrarComo('laura.mendez@cforma.test');
     }],
     ['Entrar como alumno', function () {
-        iniciarSesion({ correo: 'alumno@example.com', nombre: 'Alumno de prueba', rol: 'alumno' });
+        return entrarComo('daniel.ruiz@cforma.test');
     }],
-    ['Cerrar sesión', function () {
+    ['Cerrar sesión', async function () {
+        await pedirApi('/api/auth/logout', { metodo: 'POST' });
         cerrarSesion();
     }],
     ['Apagar modo dev', function () {
@@ -36,8 +46,12 @@ function crearPanelDev() {
         boton.className = 'btn btn-sm btn-outline-secondary';
         boton.textContent = texto;
         // Recarga sin ?dev=1 en la dirección: si no, "Apagar modo dev" lo volvería a encender
-        boton.addEventListener('click', function () {
-            accion();
+        boton.addEventListener('click', async function () {
+            try {
+                await accion();
+            } catch {
+                return; // pedirApi ya ha enseñado el error
+            }
             const direccion = new URL(location.href);
             direccion.searchParams.delete('dev');
             location.replace(direccion);
